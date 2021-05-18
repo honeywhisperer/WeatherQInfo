@@ -25,10 +25,10 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
         notifyDataSetChanged()
     }
 
-    fun addItem(weatherToday: WeatherToday){
-        weatherList.add(0, weatherToday)
-        notifyItemInserted(0)
-    }
+//    fun addItem(weatherToday: WeatherToday){
+//        weatherList.add(0, weatherToday)
+//        notifyItemInserted(0)
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherTodayViewHolder {
         val itemWeatherTodayBinding =

@@ -25,7 +25,7 @@ object ApiServiceModule {
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit
             .Builder()
-            .baseUrl(BuildConfig.BASE_URL)//todo
+            .baseUrl(BuildConfig.BASE_URL)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create())
             .client(client)

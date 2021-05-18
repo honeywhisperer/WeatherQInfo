@@ -6,20 +6,22 @@
     android:orientation="vertical"
     tools:context=".viewtoday.WeatherTodayFragment">
 
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/rvWeatherToday"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:paddingStart="4dp"-->
-    <!--        android:paddingTop="4dp"-->
-    <!--        android:paddingEnd="4dp" />-->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tvWeatherToday"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvWeatherToday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:paddingStart="4dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="?attr/actionBarSize"
+            android:clipToPadding="false"
+            android:paddingEnd="4dp" />
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tvWeatherToday"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content" />-->
+<!--    </ScrollView>-->
 </LinearLayout>

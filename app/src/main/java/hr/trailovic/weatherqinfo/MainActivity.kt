@@ -70,12 +70,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 true
             }
             R.id.action_add -> {
-                // todo
                 DialogAddFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
             R.id.action_remove_all -> {
-                //todo
                 showDialog(this, "Remove all cities?", "Cancel", "Remove") {
                     viewModel.removeAllData()
                 }

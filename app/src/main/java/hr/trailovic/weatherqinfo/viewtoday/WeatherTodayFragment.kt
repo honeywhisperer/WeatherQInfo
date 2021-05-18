@@ -23,8 +23,8 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
 //    @Inject
 //    lateinit var glideRequestManager: RequestManager
 
-//    @Inject
-//    lateinit var weatherTodayAdapter: WeatherTodayAdapter
+    @Inject
+    lateinit var weatherTodayAdapter: WeatherTodayAdapter
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -35,7 +35,7 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
 
     override fun setup() {
         Log.d(TAG, "setup: Start")
-//        setWeatherTodayRV()
+        setWeatherTodayRV()
         bind()
 //        start()
     }
@@ -45,28 +45,19 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
 //    }
 
     private fun bind() {
-//        viewModel.weatherTodayListLD.observe(viewLifecycleOwner, { weatherList ->
-//            weatherList?.let {
-//                weatherTodayAdapter.setItems(it)
-//                Log.d(TAG, "bind: setSomeItems")
-//            }
-//                ?: run {
-//                    weatherTodayAdapter.setItems(emptyList())
-//                    Log.d(TAG, "bind: setEmptyList")
-//                }
-//        })
+        viewModel.weatherTodayListLD.observe(viewLifecycleOwner, { weatherList ->
+            weatherList?.let {
+                weatherTodayAdapter.setItems(it)
+                Log.d(TAG, "bind: setSomeItems")
+            }
+                ?: run {
+                    weatherTodayAdapter.setItems(emptyList())
+                    Log.d(TAG, "bind: setEmptyList")
+                }
+        })
 
-//        viewModel.weatherTodayLD.observe(viewLifecycleOwner){
-//            weatherTodayAdapter.addItem(it)
-//            Log.d(TAG, "bind: addItem: ${it.city}")
-//        }
 
-//        viewModel.weatherTodayLD.observe(viewLifecycleOwner) {
-////            var weatherText = binding.tvWeatherToday.text.toString()
-////            weatherText += "\n\n" + it.toString()
-////            binding.tvWeatherToday.text = weatherText
-//            binding.tvWeatherToday.text = it.toString()
-//        }
+        /*
         viewModel.weatherTodayListLD.observe(viewLifecycleOwner){
             var weatherText = " - - - "
             it?.forEach {
@@ -74,14 +65,15 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
             }
             binding.tvWeatherToday.text = weatherText
         }
+        */
     }
 
-//    private fun setWeatherTodayRV() {
-//        with(binding.rvWeatherToday) {
-//            layoutManager = LinearLayoutManager(requireContext())
-//            adapter = weatherTodayAdapter
-//        }
-//    }
+    private fun setWeatherTodayRV() {
+        with(binding.rvWeatherToday) {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = weatherTodayAdapter
+        }
+    }
 
 
     companion object {

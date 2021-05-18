@@ -20,7 +20,7 @@ android {
 
         buildConfigField "String", "BASE_URL", "\"https://api.openweathermap.org/data/2.5/\""
         buildConfigField "String", "API_KEY", "\"1c8ae653ff6a6fc205c3730e200ea80e\""
-        buildConfigField "String", "WEATHER_IMG_PREFIX", "\"http://openweathermap.org/img/wn/\""
+        buildConfigField "String", "WEATHER_IMG_PREFIX", "\"https://openweathermap.org/img/wn/\""
         buildConfigField "String", "WEATHER_IMG_SUFIX", "\"@2x.png\""
     }
 
