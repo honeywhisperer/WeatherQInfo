@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        tools:text="1.1.1970." />
+
+    <ImageView
+        android:id="@+id/ivWeatherIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+
+    <TextView
+        android:id="@+id/tvTemperatureMax"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#A800"
+        android:textSize="18sp"
+        tools:text="12 C" />
+
+    <TextView
+        android:id="@+id/tvTemperatureMin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#A008"
+        android:textSize="18sp"
+        tools:text="16 C" />
+
+</LinearLayout>
