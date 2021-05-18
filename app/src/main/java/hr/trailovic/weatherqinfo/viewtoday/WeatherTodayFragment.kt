@@ -10,6 +10,8 @@ import com.bumptech.glide.annotation.GlideModule
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentWeatherTodayBinding
+import hr.trailovic.weatherqinfo.dialogs.DetailsTodayFragment
+import hr.trailovic.weatherqinfo.model.WeatherToday
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import javax.inject.Inject
 
@@ -69,6 +71,11 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
     }
 
     private fun setWeatherTodayRV() {
+        weatherTodayAdapter.listener = object : OnWeatherTodayItemInteraction{
+            override fun showDetails(weatherToday: WeatherToday) {
+                DetailsTodayFragment.newInstance(weatherToday).show(requireActivity().supportFragmentManager, null)
+            }
+        }
         with(binding.rvWeatherToday) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = weatherTodayAdapter

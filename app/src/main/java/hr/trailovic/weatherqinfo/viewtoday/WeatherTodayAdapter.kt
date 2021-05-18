@@ -15,6 +15,8 @@ import javax.inject.Inject
 class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: RequestManager) :
     RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayViewHolder>() {
 
+    var listener: OnWeatherTodayItemInteraction? = null
+
     private val weatherList = mutableListOf<WeatherToday>()
 
     fun setItems(list: List<WeatherToday>) {
@@ -44,6 +46,12 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
 
     inner class WeatherTodayViewHolder(private val itemWeatherTodayBinding: ItemWeatherTodayBinding) :
         RecyclerView.ViewHolder(itemWeatherTodayBinding.root) {
+        init {
+            itemWeatherTodayBinding.root.setOnLongClickListener {
+                listener?.showDetails(weatherList[layoutPosition])
+                true
+            }
+        }
         fun bind(weatherToday: WeatherToday) {
             with(itemWeatherTodayBinding) {
                 tvLocation.text = weatherToday.city
@@ -60,4 +68,8 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
             }
         }
     }
+}
+
+interface OnWeatherTodayItemInteraction {
+    fun showDetails(weatherToday: WeatherToday)
 }

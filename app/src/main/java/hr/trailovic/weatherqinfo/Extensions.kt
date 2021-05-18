@@ -47,7 +47,7 @@ fun showDialog(
 fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
-    val date = Date((this + timezoneOffset) * 1000)
+    val date = Date((this + timezoneOffset) * 1)
     return format.format(date)
 }
 
@@ -57,7 +57,7 @@ fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
 fun Long.toDateString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
-    val date = Date((this + timezoneOffset) * 1000)
+    val date = Date((this + timezoneOffset) * 1)
     return format.format(date)
 }
 
@@ -77,7 +77,7 @@ fun Long.toShortDateString(timezoneOffset: Int = 0): String {
 fun Long.toTimeString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // *** UTC or GMT? any difference?
-    val date = Date((this + timezoneOffset) * 1000)
+    val date = Date((this + timezoneOffset) * 1)
     return format.format(date)
 }
 

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentWeatherWeekBinding
+import hr.trailovic.weatherqinfo.dialogs.DetailsWeekFragment
+import hr.trailovic.weatherqinfo.model.WeatherWeek
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import javax.inject.Inject
 
@@ -33,6 +35,12 @@ class WeatherWeekFragment : BaseFragment<FragmentWeatherWeekBinding>() {
     }
 
     private fun setWeatherWeekRV() {
+        outerAdapter.listener = object : OnWeatherWeekItemInteraction{
+            override fun showDeatils(weatherWeek: WeatherWeek) {
+                DetailsWeekFragment.newInstance(weatherWeek).show(requireActivity().supportFragmentManager, null)
+            }
+        }
+
         with(binding.rvWeatherWeek){
             layoutManager = LinearLayoutManager(requireContext())
             adapter = outerAdapter

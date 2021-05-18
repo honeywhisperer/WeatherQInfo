@@ -1,10 +1,13 @@
 package hr.trailovic.weatherqinfo.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity
 data class WeatherToday(
     @ColumnInfo val cod: Int,
@@ -32,7 +35,7 @@ data class WeatherToday(
 //
 //    @ColumnInfo val timeOfRead: Long,
 //    @ColumnInfo val timeOfData: Long,
-)
+) : Parcelable
 
 // --- API response
 

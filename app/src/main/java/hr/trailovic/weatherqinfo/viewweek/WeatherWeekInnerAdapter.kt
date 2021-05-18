@@ -15,6 +15,8 @@ import hr.trailovic.weatherqinfo.toWeatherIconUrl
 class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
     RecyclerView.Adapter<WeatherWeekInnerAdapter.WeatherWeekInnerViewHolder>() {
 
+    var listener: OnWeatherWeekItemInteraction? = null
+
     private val weatherWeekList = mutableListOf<WeatherWeek>()
 
     fun setItems(list: List<WeatherWeek>) {
@@ -43,8 +45,14 @@ class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
 
     inner class WeatherWeekInnerViewHolder(private val itemWeatherWeekInnerBinding: ItemWeatherWeekInnerBinding) :
         RecyclerView.ViewHolder(itemWeatherWeekInnerBinding.root) {
+        init {
+            itemWeatherWeekInnerBinding.root.setOnLongClickListener {
+                listener?.showDeatils(weatherWeekList[layoutPosition])
+                true
+            }
+        }
         fun bind(weatherWeek: WeatherWeek) {
-            with(itemWeatherWeekInnerBinding){
+            with(itemWeatherWeekInnerBinding) {
                 tvDate.text = weatherWeek.sunrise.toShortDateString()
                 tvTemperatureMax.text = weatherWeek.tempMax.oneDecimal()
                 tvTemperatureMin.text = weatherWeek.tempMin.oneDecimal()
@@ -55,4 +63,8 @@ class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
             }
         }
     }
+}
+
+interface OnWeatherWeekItemInteraction {
+    fun showDeatils(weatherWeek: WeatherWeek)
 }

@@ -1,11 +1,14 @@
 package hr.trailovic.weatherqinfo.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
+@Parcelize
 @Entity
 data class WeatherWeek(
     @ColumnInfo val location: String,
@@ -22,7 +25,7 @@ data class WeatherWeek(
     @ColumnInfo val rain: Double,
     @ColumnInfo val uvi: Double,
     @PrimaryKey val id: String = UUID.randomUUID().toString()
-)
+) : Parcelable
 
 // --- API response
 
