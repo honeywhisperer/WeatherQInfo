@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class WeatherWeekOuterAdapter @Inject constructor(
     private val glideRequestManager: RequestManager,
-    @ApplicationContext private val context: Context
+    /*@ApplicationContext private val context: Context*/
 ) : RecyclerView.Adapter<WeatherWeekOuterAdapter.WeatherWeekOuterViewHolder>() {
 
     private val weatherWeekList = mutableListOf<List<WeatherWeek>>()
@@ -44,10 +44,11 @@ class WeatherWeekOuterAdapter @Inject constructor(
 
     inner class WeatherWeekOuterViewHolder(private val itemWeatherWeekOuterBinding: ItemWeatherWeekOuterBinding) :
         RecyclerView.ViewHolder(itemWeatherWeekOuterBinding.root) {
+
         fun bind(oneLocationWeatherWeek: List<WeatherWeek>) {
-            with(itemWeatherWeekOuterBinding) {
-                tvLocation.text = oneLocationWeatherWeek[0].location
-            }
+            itemWeatherWeekOuterBinding.tvLocation.text =
+                oneLocationWeatherWeek[0].location
+
             val innerAdapter = WeatherWeekInnerAdapter(glideRequestManager)
             with(itemWeatherWeekOuterBinding.rvWeatherSeven) {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

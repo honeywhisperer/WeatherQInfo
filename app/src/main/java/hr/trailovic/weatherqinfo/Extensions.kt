@@ -61,6 +61,15 @@ fun Long.toDateString(timezoneOffset: Int = 0): String {
     return format.format(date)
 }
 
+/*
+*  intended to be used on parameter that represents seconds (not millis)
+* */
+fun Long.toShortDateString(timezoneOffset: Int = 0): String {
+    val format = SimpleDateFormat("dd/MM", Locale.ROOT)
+    format.timeZone = TimeZone.getTimeZone("UTC") // ***
+    val date = Date((this + timezoneOffset) * 1)
+    return format.format(date)
+}
 
 /*
 *  intended to be used on parameter that represents seconds (not millis)

@@ -13,7 +13,7 @@ import hr.trailovic.weatherqinfo.databinding.FragmentWeatherTodayBinding
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import javax.inject.Inject
 
-private const val TAG = "WTF:::"
+private const val TAG = "wtF:::"
 
 @AndroidEntryPoint
 class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
