@@ -16,6 +16,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvWeatherSeven"
         android:layout_width="match_parent"
+        android:scrollbars="horizontal"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

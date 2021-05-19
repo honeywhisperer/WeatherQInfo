@@ -58,8 +58,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     fun removeCityData(city: City) {
         viewModelScope.launch {
             weatherRepo.removeCity(city)
-            //remove weather today by city
-            //remove weather week by city
+            /*not needed, I think so far ...*/
+//            weatherRepo.removeWeatherTodayByCityName(city.name)
+//            weatherRepo.removeWeatherWeekByCityName(city.name)
         }
     }
 
@@ -75,8 +76,10 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     fun addCity(userInput: String) {
         newCityName = userInput.capitalizeEveryWord()
         cityObservable.onNext(newCityName)
+    }
 
-
+    fun getAllCitiesLD(): LiveData<List<City>> {
+        return weatherRepo.getAllCitiesLD()
     }
 
     fun openRxChannels() {

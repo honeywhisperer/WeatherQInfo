@@ -12,6 +12,7 @@ import hr.trailovic.weatherqinfo.databinding.ActivityMainBinding
 import hr.trailovic.weatherqinfo.dialogs.BottomNavigationFragment
 import hr.trailovic.weatherqinfo.dialogs.DialogAddFragment
 import hr.trailovic.weatherqinfo.dialogs.InfoFirstStartFragment
+import hr.trailovic.weatherqinfo.dialogs.ListCitiesFragment
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 
@@ -101,7 +102,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
             R.id.action_cities->{
                 //todo
-                Toast.makeText(this, "To be implemented (Remove individual cities from the list)", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "To be implemented (Remove individual cities from the list)", Toast.LENGTH_SHORT).show()
+                ListCitiesFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
             R.id.action_info->{

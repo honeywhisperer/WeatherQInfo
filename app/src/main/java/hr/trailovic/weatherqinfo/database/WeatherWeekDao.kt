@@ -17,6 +17,9 @@ interface WeatherWeekDao {
     @Query("DELETE FROM weatherweek")
     suspend fun removeAllWeatherWeek()
 
+    @Query("DELETE FROM weatherweek WHERE upper(location) LIKE upper(:cityName)")
+    suspend fun removeWeatherWeekByCityName(cityName: String)
+
     // GET
 
     @Query("SELECT * FROM weatherweek")

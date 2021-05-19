@@ -1,5 +1,6 @@
 package hr.trailovic.weatherqinfo.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import hr.trailovic.weatherqinfo.model.City
 import io.reactivex.Flowable
@@ -11,16 +12,16 @@ interface CityDao {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    /*suspend*/ fun addCity(city: City)
+    fun addCity(city: City) //Rx
 
     @Delete
-    /*suspend*/ fun removeCity(city: City)
+    suspend fun removeCity(city: City)
 
     @Query("DELETE FROM city WHERE upper(name) LIKE upper(:cityName)")
     suspend fun removeCityByName(cityName: String)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    /*suspend*/ fun updateCity(city: City)
+    fun updateCity(city: City) //Rx
 
     @Query("DELETE FROM city")
     suspend fun removeAll()
@@ -31,6 +32,8 @@ interface CityDao {
     @Query("SELECT * FROM city")
     fun getAllCitiesRx(): Observable<List<City>>
 
+    @Query("SELECT * FROM city")
+    fun getAllCitiesLD(): LiveData<List<City>>
 
 
     @Query("SELECT * FROM city")

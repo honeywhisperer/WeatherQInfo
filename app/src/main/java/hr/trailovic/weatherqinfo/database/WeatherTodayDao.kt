@@ -2,6 +2,7 @@ package hr.trailovic.weatherqinfo.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import hr.trailovic.weatherqinfo.model.City
 import hr.trailovic.weatherqinfo.model.WeatherToday
 import io.reactivex.Observable
 
@@ -18,6 +19,9 @@ interface WeatherTodayDao {
 
     @Query("DELETE FROM weathertoday")
     suspend fun removeAllWeatherToday()
+
+    @Query("DELETE FROM weathertoday WHERE upper(city) LIKE upper(:cityName)")
+    suspend fun removeWeatherTodayByCityName(cityName: String)
 
     // GET
 

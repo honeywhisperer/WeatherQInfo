@@ -1,6 +1,7 @@
 package hr.trailovic.weatherqinfo.repo
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import hr.trailovic.weatherqinfo.database.AppDatabase
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.networking.WeatherService
@@ -24,11 +25,15 @@ class WeatherRepository @Inject constructor(
         return cityDao.getAllCitiesRx()
     }
 
-    /*suspend*/ fun removeCity(city: City) {
+    fun getAllCitiesLD(): LiveData<List<City>> {
+        return cityDao.getAllCitiesLD()
+    }
+
+    suspend fun removeCity(city: City) {
         cityDao.removeCity(city)
     }
 
-    suspend fun removeCity(cityName: String) {
+    suspend fun removeCityByName(cityName: String) {
         cityDao.getCityByName(cityName)
     }
 
@@ -52,6 +57,10 @@ class WeatherRepository @Inject constructor(
 
     suspend fun removeWeatherToday(weatherToday: WeatherToday) {
         weatherTodayDao.removeWeatherToday(weatherToday)
+    }
+
+    suspend fun removeWeatherTodayByCityName(cityName: String){
+        weatherTodayDao.removeWeatherTodayByCityName(cityName)
     }
 
     suspend fun removeAllWeatherToday() {
@@ -94,6 +103,10 @@ class WeatherRepository @Inject constructor(
 
     suspend fun removeAllWeatherWeek() {
         weatherWeekDao.removeAllWeatherWeek()
+    }
+
+    suspend fun removeWeatherWeekByCityName(cityName: String){
+        weatherWeekDao.removeWeatherWeekByCityName(cityName)
     }
 
     /*suspend*/ fun addWeatherWeek(weatherWeek: WeatherWeek) {
