@@ -9,16 +9,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.trailovic.weatherqinfo.capitalizeEveryWord
 import hr.trailovic.weatherqinfo.convertWeatherTodayApiResponse
 import hr.trailovic.weatherqinfo.convertWeatherWeekApiResponse
-import hr.trailovic.weatherqinfo.model.City
-import hr.trailovic.weatherqinfo.model.WeatherToday
-import hr.trailovic.weatherqinfo.model.WeatherWeek
+import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.repo.WeatherRepository
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,6 +46,13 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     private val weatherWeekListListMLD = MutableLiveData<List<List<WeatherWeek>>?>()
     public val weatherWeekListListLD: LiveData<List<List<WeatherWeek>>?> = weatherWeekListListMLD
 
+    private var newCityName = ""
+    private val cityObservable: Subject<String> = PublishSubject.create()
+    private val xx = cityObservable.toSerialized().subscribeOn(Schedulers.io())
+//    private val xxx: Observable<String> = PublishObservable
+//    private val cityNameMLD = MutableLiveData<String>()
+
+
     /*city*/
 
     fun removeCityData(city: City) {
@@ -64,25 +72,90 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
         }
     }
 
-    fun checkAndAddCity(userInput: String) {
-        val cityName = userInput.capitalizeEveryWord()
-        val d = Observable.just(cityName)
-            .subscribeOn(Schedulers.io())
-            .flatMap {
-                weatherRepo.fetchCoordinatesForCity(it)
-            }
-            .subscribeBy(
-                onError = { messageMLD.postValue("Error while fetching data $cityName") },
-                onNext = { weatherRepo.addCity(City(cityName, it.coord.lon, it.coord.lat)) }
-            )
-        disposables.add(d)
+    fun addCity(userInput: String) {
+        newCityName = userInput.capitalizeEveryWord()
+        cityObservable.onNext(newCityName)
+
+
     }
 
+    fun openRxChannels() {
+        checkAndAddCity()
+        fetchWeatherToday()
+        fetchWeatherWeek()
+    }
+
+    /*Rx*/
+
+    private fun checkAndAddCity() {
+        Log.d(TAG, "checkAndAddCity: Started")
+
+//        val d = cityObservable
+        xx
+            .observeOn(Schedulers.io())
+            .map {
+                Log.d(TAG, "checkAndAddCity: map: |${it}|")
+                Log.d(TAG, "checkAndAddCity: Map running on ${Thread.currentThread().name}")
+                it
+            }
+            .map {
+                Log.d(TAG, "checkAndAddCity: FlatMap running on ${Thread.currentThread().name}")
+                WeatherTodayResponseWrapper(weatherRepo.fetchCoordinatesForCity(it))
+            }
+//            .map {
+//                Log.d(TAG, "checkAndAddCity: response code: ${it.cod}")
+//                val new: WeatherTodayResponseWrapper
+//                if (it.cod == 200)
+//                    new = WeatherTodayResponseWrapper(it)
+//                else
+//                    new = WeatherTodayResponseWrapper(null)
+//                new
+//            }
+////            .onErrorResumeNext(Observable.just(WeatherTodayResponseWrapper(null)))
+            .subscribe(object : Observer<WeatherTodayResponseWrapper> {
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                    Log.d(TAG, "checkAndAddCity: onSubscribe ${Thread.currentThread().name}")
+                }
+
+                override fun onNext(t: WeatherTodayResponseWrapper) {
+                    if (t.weatherTodayResponse != null && t.weatherTodayResponse.cod == 200) {
+                        val resp = t.weatherTodayResponse.coord
+                        weatherRepo.addCity(City(newCityName, resp.lon, resp.lat))
+                    } else {
+                        messageMLD.postValue("Error while fetching data $newCityName")
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    messageMLD.postValue("Error while fetching data $newCityName ... restart app")
+                }
+
+                override fun onComplete() {
+                    Log.d(
+                        TAG,
+                        "checkAndAddCity: onComplete called on ${Thread.currentThread().name}"
+                    )
+                }
+            })
+//            .subscribeBy(
+//                onError = {
+//                    messageMLD.postValue("Error while fetching data $newCityName")
+//                    Log.d(TAG, "checkAndAddCity: Error running on ${Thread.currentThread().name}")
+//                    Log.e(TAG, "checkAndAddCity: ", it)
+//                },
+//                onNext = {
+//                    weatherRepo.addCity(City(newCityName, it.coord.lon, it.coord.lat))
+//                }
+//            )
+
+//        disposables.add(d)
+    }
 
     /*weather today*/
 
-    fun fetchWeatherToday() {
-        Log.d(TAG, "fetchWeatherToday: start")
+    private fun fetchWeatherToday() {
+        Log.d(TAG, "fetchWeatherToday: Started")
 
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
@@ -129,8 +202,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
     }
 
-    fun fetchWeatherWeek() {
-        Log.d(TAG, "fetchWeatherWeek: start")
+    private fun fetchWeatherWeek() {
+        Log.d(TAG, "fetchWeatherWeek: Started")
 
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
@@ -168,7 +241,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     weatherValue.addAll(t)
                     weatherWeekListMLD.postValue(weatherValue)
 
-                    val weatherListValue = weatherWeekListListMLD.value?.toMutableList() ?: emptyList<List<WeatherWeek>>().toMutableList()
+                    val weatherListValue = weatherWeekListListMLD.value?.toMutableList()
+                        ?: emptyList<List<WeatherWeek>>().toMutableList()
                     weatherListValue.add(t)
                     weatherWeekListListMLD.postValue(weatherListValue)
                     Log.d(TAG, "onNext: ${t[0].location}")

@@ -1,5 +1,6 @@
 package hr.trailovic.weatherqinfo.networking
 
+import androidx.lifecycle.LiveData
 import hr.trailovic.weatherqinfo.BuildConfig
 import hr.trailovic.weatherqinfo.model.WeatherTodayResponse
 import hr.trailovic.weatherqinfo.model.WeatherWeekResponse
@@ -9,6 +10,20 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherService {
+
+//    @GET("weather/")
+//    fun getCurrentWeatherForToday(
+//
+//        @Query("q")
+//        city: String,
+//
+//        @Query("appid")
+//        appid: String = BuildConfig.API_KEY,
+//
+//        @Query("units")
+//        units: String = "metric"
+//
+//    ): LiveData<WeatherTodayResponse>
 
     // Rx
 

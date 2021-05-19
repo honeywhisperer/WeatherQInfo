@@ -1,5 +1,6 @@
 package hr.trailovic.weatherqinfo.repo
 
+import android.util.Log
 import hr.trailovic.weatherqinfo.database.AppDatabase
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.networking.WeatherService
@@ -67,8 +68,22 @@ class WeatherRepository @Inject constructor(
         return apiService.getCurrentWeatherForTodayRx(city.name)
     }
 
-    fun fetchCoordinatesForCity(cityName: String): Observable<WeatherTodayResponse> {
-        return apiService.getCurrentWeatherForTodayRx(cityName)
+//    fun fetchCoordinatesForCity(cityName: String): Observable<WeatherTodayResponse> {
+//        return apiService.getCurrentWeatherForTodayRx(cityName)
+//    }
+
+    fun fetchCoordinatesForCity(cityName: String): WeatherTodayResponse? {
+        var response: WeatherTodayResponse?
+        try {
+            Log.d("wR:::", "fetchCoordinatesForCity: try: we are here")
+            response = apiService.getCurrentWeatherForTodayRx(cityName).blockingFirst()
+        } catch (e: Throwable) {
+            Log.e("wR:::", "fetchCoordinatesForCity: catch: we are here", e)
+            response = null
+        } finally {
+            Log.d("wR:::", "fetchCoordinatesForCity: finally: we are here")
+        }
+        return response
     }
 
     /*weather week - Room*/

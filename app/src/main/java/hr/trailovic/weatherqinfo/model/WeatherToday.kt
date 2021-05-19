@@ -145,3 +145,18 @@ data class Snow(
     @field:Json(name = "snow.3h")
     val snow3h: Int,
 )
+
+// ***
+
+//todo
+//class WeatherTodayResponseWrapper private constructor(){
+//    private var weatherTodayResponseInstance: WeatherTodayResponse?=null
+//    fun get() = weatherTodayResponseInstance
+//    companion object{
+//        fun new(weatherTodayResponse: WeatherTodayResponse?) = WeatherTodayResponseWrapper().apply {
+//            weatherTodayResponseInstance = weatherTodayResponse
+//        }
+//    }
+//}
+
+data class WeatherTodayResponseWrapper(val weatherTodayResponse: WeatherTodayResponse?)

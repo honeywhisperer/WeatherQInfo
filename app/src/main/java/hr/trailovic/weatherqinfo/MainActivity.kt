@@ -16,8 +16,8 @@ import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 
 private const val TAG = "MA:::"
-private const val APP_PREFS_NAME = "WEatherQPrefsFile"
-private const val ARG_FIRST_START = "just arg"
+private const val APP_PREFS_NAME = "WeatherQPrefsFile"
+private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 
 
 @AndroidEntryPoint
@@ -37,8 +37,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun openRxChannels() {
-        viewModel.fetchWeatherToday()
-        viewModel.fetchWeatherWeek()
+        viewModel.openRxChannels()
     }
 
     private fun bind() {
@@ -60,10 +59,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun setInitView() {
         val prefs = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE)
-        val isThisFirstApplicationStart = prefs.getBoolean(ARG_FIRST_START, true)
+        val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
 
         val editor = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE).edit()
-        editor.putBoolean(ARG_FIRST_START, false)
+        editor.putBoolean(KEY_FIRST_START, false)
         editor.apply()
 
         val welcomeMessage: String
