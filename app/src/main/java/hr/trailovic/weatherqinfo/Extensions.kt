@@ -14,6 +14,7 @@ import hr.trailovic.weatherqinfo.model.WeatherWeek
 import hr.trailovic.weatherqinfo.model.WeatherWeekResponse
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 fun displayFragment(fragmentActivity: FragmentActivity, fragment: Fragment) {
     fragmentActivity
@@ -75,7 +76,8 @@ fun Long.toShortDateString(timezoneOffset: Int = 0): String {
 *  intended to be used on parameter that represents seconds (not millis)
 * */
 fun Long.toTimeString(timezoneOffset: Int = 0): String {
-    val format = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
+//    val format = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
+    val format = SimpleDateFormat("HH:mm", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // *** UTC or GMT? any difference?
     val date = Date((this + timezoneOffset) * 1)
     return format.format(date)
@@ -93,6 +95,38 @@ fun String.capitalizeEveryWord(): String {
         it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 }
+
+
+/*String add units*/
+
+fun String.temperature(): String {
+    return "$this°C"
+}
+
+fun String.pressure(): String {
+    return "$this hPa"
+}
+
+fun String.humidity(): String {
+    return "$this%"
+}
+
+fun String.windSpeed(): String{
+    return "${this}m/s"
+}
+
+fun String.rain(): String{
+    return "${this}mm"
+}
+
+fun Double.generateFeelsLikeTemperatureText(realTemperature: Double): String {
+    return if (abs(this - realTemperature) < 0.6)
+        "and feels the same"
+    else
+        "feels like ${this.oneDecimal().temperature()}"
+}
+
+/*Converters*/
 
 fun convertWeatherTodayApiResponse(
     cityName: String,

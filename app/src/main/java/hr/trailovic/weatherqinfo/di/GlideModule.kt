@@ -12,7 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@GlideModule
+//@GlideModule
 @InstallIn(SingletonComponent::class)
 @Module
 object GlideModule {
@@ -23,6 +23,3 @@ object GlideModule {
         return Glide.with(context)
     }
 }
-
-//@GlideModule
-//class MyGlide: AppGlideModule()

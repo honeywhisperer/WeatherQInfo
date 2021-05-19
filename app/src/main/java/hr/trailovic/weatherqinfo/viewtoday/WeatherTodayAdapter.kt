@@ -5,11 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import hr.trailovic.weatherqinfo.R
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import hr.trailovic.weatherqinfo.*
 import hr.trailovic.weatherqinfo.databinding.ItemWeatherTodayBinding
 import hr.trailovic.weatherqinfo.model.WeatherToday
-import hr.trailovic.weatherqinfo.oneDecimal
-import hr.trailovic.weatherqinfo.toWeatherIconUrl
 import javax.inject.Inject
 
 class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: RequestManager) :
@@ -56,12 +55,13 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
             with(itemWeatherTodayBinding) {
                 tvLocation.text = weatherToday.city
                 tvDescription.text = weatherToday.description
-                tvTemperature.text = weatherToday.temp.oneDecimal()
-                tvTemperatureFeelsLike.text = weatherToday.feels_like.oneDecimal()
+                tvTemperature.text = weatherToday.temp.oneDecimal().temperature()
+                tvTemperatureFeelsLike.text = weatherToday.feels_like.generateFeelsLikeTemperatureText(weatherToday.temp)
 
                 glideRequestManager
                     .load(weatherToday.icon.toWeatherIconUrl())
                     .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_error)
                     .into(ivWeatherIcon)

@@ -5,12 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import hr.trailovic.weatherqinfo.*
 import hr.trailovic.weatherqinfo.databinding.ItemWeatherWeekInnerBinding
 import hr.trailovic.weatherqinfo.model.WeatherWeek
-import hr.trailovic.weatherqinfo.oneDecimal
-import hr.trailovic.weatherqinfo.toDateString
-import hr.trailovic.weatherqinfo.toShortDateString
-import hr.trailovic.weatherqinfo.toWeatherIconUrl
 
 class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
     RecyclerView.Adapter<WeatherWeekInnerAdapter.WeatherWeekInnerViewHolder>() {
@@ -58,6 +56,9 @@ class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
                 tvTemperatureMin.text = weatherWeek.tempMin.oneDecimal()
                 glideRequestManager
                     .load(weatherWeek.weatherIcon.toWeatherIconUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_error)
                     .fitCenter()
                     .into(ivWeatherIcon)
             }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.*
 import hr.trailovic.weatherqinfo.databinding.FragmentDetailsWeekBinding
@@ -48,27 +49,45 @@ class DetailsWeekFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFullScreen()
         setInfo()
+        setListeners()
+    }
+
+    private fun setListeners() {
+        binding.root.setOnClickListener {
+            dialog?.dismiss()
+        }
     }
 
     private fun setInfo() {
-        weatherWeekData?.let {weatherWeek ->
-            with(binding){
+        weatherWeekData?.let { weatherWeek ->
+            with(binding) {
                 tvLocation.text = weatherWeek.location
-                tvSunrise.text = weatherWeek.sunrise.toTimeString()
-                tvSunset.text = weatherWeek.sunset.toTimeString()
-                tvTempDay.text = weatherWeek.tempDay.oneDecimal()
-                tvTempMin.text = weatherWeek.tempMin.oneDecimal()
-                tvTempMax.text = weatherWeek.tempMax.oneDecimal()
+                ("Sunrise " + weatherWeek.sunrise.toTimeString()).also { tvSunrise.text = it }
+                ("Sunset " + weatherWeek.sunset.toTimeString()).also { tvSunset.text = it }
+                ("Temperature " + weatherWeek.tempDay.oneDecimal()
+                    .temperature()).also { tvTempDay.text = it }
+                ("Min " + weatherWeek.tempMin.oneDecimal().temperature()).also {
+                    tvTempMin.text = it
+                }
+                ("Max " + weatherWeek.tempMax.oneDecimal().temperature()).also {
+                    tvTempMax.text = it
+                }
                 tvWeatherDescription.text = weatherWeek.weatherDescription
-                tvPressure.text = weatherWeek.pressure.toString()
-                tvHumidity.text = weatherWeek.humidity.toString()
-                tvWindSpeed.text = weatherWeek.windSpeed.oneDecimal()
-                tvRain.text = weatherWeek.rain.oneDecimal()
-                tvUvi.text = weatherWeek.uvi.oneDecimal()
+                ("Pressure " + weatherWeek.pressure.toString().pressure()).also {
+                    tvPressure.text = it
+                }
+                ("Humidity " + weatherWeek.humidity.toString().humidity()).also {
+                    tvHumidity.text = it
+                }
+                ("Wind speed " + weatherWeek.windSpeed.oneDecimal()
+                    .windSpeed()).also { tvWindSpeed.text = it }
+                ("Rain " + weatherWeek.rain.oneDecimal().rain()).also { tvRain.text = it }
+                ("UVI index " + weatherWeek.uvi.oneDecimal()).also { tvUvi.text = it }
 
                 glide
                     .load(weatherWeek.weatherIcon.toWeatherIconUrl())
                     .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_error)
                     .into(ivIcon)

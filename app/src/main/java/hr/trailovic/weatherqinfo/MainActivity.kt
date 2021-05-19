@@ -11,9 +11,14 @@ import hr.trailovic.weatherqinfo.base.BaseActivity
 import hr.trailovic.weatherqinfo.databinding.ActivityMainBinding
 import hr.trailovic.weatherqinfo.dialogs.BottomNavigationFragment
 import hr.trailovic.weatherqinfo.dialogs.DialogAddFragment
+import hr.trailovic.weatherqinfo.dialogs.InfoFirstStartFragment
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
+import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 
 private const val TAG = "MA:::"
+private const val APP_PREFS_NAME = "WEatherQPrefsFile"
+private const val ARG_FIRST_START = "just arg"
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -37,10 +42,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun bind() {
-        viewModel.messageLD.observe(this){
+        viewModel.messageLD.observe(this) {
             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         }
-        viewModel.loadingLD.observe(this){
+        viewModel.loadingLD.observe(this) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         }
     }
@@ -54,8 +59,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun setInitView() {
-        //todo: use shared prefs for restoring the last view
-        Toast.makeText(this, "W E L C O M E", Toast.LENGTH_SHORT).show()
+        val prefs = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE)
+        val isThisFirstApplicationStart = prefs.getBoolean(ARG_FIRST_START, true)
+
+        val editor = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putBoolean(ARG_FIRST_START, false)
+        editor.apply()
+
+        val welcomeMessage: String
+
+        if (isThisFirstApplicationStart){
+            displayFragment(this, InfoFirstStartFragment.newInstance())
+            welcomeMessage = "W E L C O M E"
+        }
+        else{
+            displayFragment(this, WeatherTodayFragment.newInstance())
+            welcomeMessage = "W E L C O M E   B A C K"
+        }
+        Toast.makeText(this, welcomeMessage, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -77,6 +98,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 showDialog(this, "Remove all cities?", "Cancel", "Remove") {
                     viewModel.removeAllData()
                 }
+                true
+            }
+            R.id.action_cities->{
+                //todo
+                Toast.makeText(this, "To be implemented (Remove individual cities from the list)", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_info->{
+                displayFragment(this, InfoFirstStartFragment.newInstance())
                 true
             }
             else -> false

@@ -9,7 +9,6 @@
         android:id="@+id/tvDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         tools:text="1.1.1970." />
 
     <ImageView
@@ -21,7 +20,7 @@
         android:id="@+id/tvTemperatureMax"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#A800"
+        android:textStyle="bold"
         android:textSize="18sp"
         tools:text="12 C" />
 
@@ -29,7 +28,6 @@
         android:id="@+id/tvTemperatureMin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#A008"
         android:textSize="18sp"
         tools:text="16 C" />
 

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.*
 import hr.trailovic.weatherqinfo.databinding.FragmentDetailsTodayBinding
@@ -48,24 +49,32 @@ class DetailsTodayFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setFullScreen()
         setInfo()
+        setListeners()
+    }
+
+    private fun setListeners() {
+        binding.root.setOnClickListener {
+            dialog?.dismiss()
+        }
     }
 
     private fun setInfo() {
         weatherTodayData?.let {weatherToday->
             with(binding) {
                 tvCity.text = weatherToday.city
-                tvSunrise.text = weatherToday.sunrise.toTimeString()
-                tvSunset.text = weatherToday.sunset.toTimeString()
-                tvTemperature.text = weatherToday.temp.oneDecimal()
-                tvFeelsLike.text = weatherToday.feels_like.oneDecimal()
-                tvTempMin.text = weatherToday.temp_min.oneDecimal()
-                tvTempMax.text = weatherToday.temp_max.oneDecimal()
-                tvPressure.text = weatherToday.pressure.toString()
-                tvHumidity.text = weatherToday.humidity.toString()
+                "Sunrise ${weatherToday.sunrise.toTimeString()}".also { tvSunrise.text = it }
+                "Sunset ${weatherToday.sunset.toTimeString()}".also { tvSunset.text = it }
+                ("Temperature " + weatherToday.temp.oneDecimal().temperature()).also { tvTemperature.text = it }
+                tvFeelsLike.text = weatherToday.feels_like.generateFeelsLikeTemperatureText(weatherToday.temp)
+                ("Min " + weatherToday.temp_min.oneDecimal().temperature()).also { tvTempMin.text = it }
+                ("Max " + weatherToday.temp_max.oneDecimal().temperature()).also { tvTempMax.text = it }
+                ("Pressure " + weatherToday.pressure.toString().pressure()).also { tvPressure.text = it }
+                ("Humidity " + weatherToday.humidity.toString().humidity()).also { tvHumidity.text = it }
                 tvDescription.text = weatherToday.description
                 glide
                     .load(weatherToday.icon.toWeatherIconUrl())
                     .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_error)
                     .into(ivIcon)
