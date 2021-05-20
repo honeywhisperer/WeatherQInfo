@@ -1,5 +1,6 @@
 package hr.trailovic.weatherqinfo
 
+import android.content.SharedPreferences
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,9 +16,10 @@ import hr.trailovic.weatherqinfo.dialogs.InfoFirstStartFragment
 import hr.trailovic.weatherqinfo.dialogs.ListCitiesFragment
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
+import javax.inject.Inject
 
 private const val TAG = "mA:::"
-private const val APP_PREFS_NAME = "WeatherQPrefsFile"
+//private const val APP_PREFS_NAME = "WeatherQPrefsFile"
 private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 
 
@@ -25,6 +27,9 @@ private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private val viewModel: WeatherViewModel by viewModels()
+
+    @Inject
+    lateinit var prefs: SharedPreferences
 
     override fun getBinding(): ActivityMainBinding {
         return ActivityMainBinding.inflate(layoutInflater)
@@ -59,10 +64,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun setInitView() {
-        val prefs = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE)
+//        val prefs = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE)
         val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
 
-        val editor = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE).edit()
+//        val editor = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE).edit()
+        val editor = prefs.edit()
         editor.putBoolean(KEY_FIRST_START, false)
         editor.apply()
 
