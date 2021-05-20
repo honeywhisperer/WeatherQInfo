@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import hr.trailovic.weatherqinfo.database.AppDatabase
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.networking.WeatherService
-import io.reactivex.Flowable
 import io.reactivex.Observable
-import io.reactivex.Single
 import javax.inject.Inject
+
+private const val TAG = "wR:::"
 
 class WeatherRepository @Inject constructor(
     private val appDatabase: AppDatabase,
@@ -33,19 +33,11 @@ class WeatherRepository @Inject constructor(
         cityDao.removeCity(city)
     }
 
-    suspend fun removeCityByName(cityName: String) {
-        cityDao.getCityByName(cityName)
-    }
-
     suspend fun removeAllCities() {
         cityDao.removeAll()
     }
 
-    /*suspend*/ fun updateCity(city: City) {
-        cityDao.updateCity(city)
-    }
-
-    /*suspend*/ fun addCity(city: City) {
+    fun addCity(city: City) {
         cityDao.addCity(city)
     }
 
@@ -67,7 +59,7 @@ class WeatherRepository @Inject constructor(
         weatherTodayDao.removeAllWeatherToday()
     }
 
-    /*suspend*/ fun addWeatherToday(weatherToday: WeatherToday) {
+    fun addWeatherToday(weatherToday: WeatherToday) {
         weatherTodayDao.addWeatherToday(weatherToday)
     }
 
@@ -84,13 +76,13 @@ class WeatherRepository @Inject constructor(
     fun fetchCoordinatesForCity(cityName: String): WeatherTodayResponse? {
         var response: WeatherTodayResponse?
         try {
-            Log.d("wR:::", "fetchCoordinatesForCity: try: we are here")
+            Log.d(TAG, "fetchCoordinatesForCity: try: we are here")
             response = apiService.getCurrentWeatherForTodayRx(cityName).blockingFirst()
         } catch (e: Throwable) {
-            Log.e("wR:::", "fetchCoordinatesForCity: catch: we are here", e)
+            Log.e(TAG, "fetchCoordinatesForCity: catch: we are here", e)
             response = null
         } finally {
-            Log.d("wR:::", "fetchCoordinatesForCity: finally: we are here")
+            Log.d(TAG, "fetchCoordinatesForCity: finally: we are here")
         }
         return response
     }
@@ -109,7 +101,7 @@ class WeatherRepository @Inject constructor(
         weatherWeekDao.removeWeatherWeekByCityName(cityName)
     }
 
-    /*suspend*/ fun addWeatherWeek(weatherWeek: WeatherWeek) {
+    fun addWeatherWeek(weatherWeek: WeatherWeek) {
         weatherWeekDao.addWeatherWeek(weatherWeek)
     }
 

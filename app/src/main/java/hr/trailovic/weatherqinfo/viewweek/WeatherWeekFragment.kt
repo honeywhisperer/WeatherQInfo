@@ -36,7 +36,7 @@ class WeatherWeekFragment : BaseFragment<FragmentWeatherWeekBinding>() {
 
     private fun setWeatherWeekRV() {
         outerAdapter.listener = object : OnWeatherWeekItemInteraction{
-            override fun showDeatils(weatherWeek: WeatherWeek) {
+            override fun showDetails(weatherWeek: WeatherWeek) {
                 DetailsWeekFragment.newInstance(weatherWeek).show(requireActivity().supportFragmentManager, null)
             }
         }
@@ -48,16 +48,6 @@ class WeatherWeekFragment : BaseFragment<FragmentWeatherWeekBinding>() {
     }
 
     private fun bind() {
-//        viewModel.weatherWeekListListLD.observe(viewLifecycleOwner){ listList ->
-//            var weatherText = " - - - \n\n"
-//            listList?.forEach {list->
-//                weatherText += " * * * ${list[0].location} * * * \n\n"
-//                list.forEach {
-//                    weatherText += it.toString() + "\n\n"
-//                }
-//            }
-//            binding.tvWeatherWeek.text = weatherText
-//        }
         viewModel.weatherWeekListListLD.observe(viewLifecycleOwner){listList->
             listList?.let { outerAdapter.setItems(it) } ?: outerAdapter.setItems(emptyList())
         }

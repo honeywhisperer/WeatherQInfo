@@ -1,22 +1,16 @@
 package hr.trailovic.weatherqinfo.viewweek
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.qualifiers.ApplicationContext
 import hr.trailovic.weatherqinfo.databinding.ItemWeatherWeekOuterBinding
-import hr.trailovic.weatherqinfo.dialogs.DetailsWeekFragment
 import hr.trailovic.weatherqinfo.model.WeatherWeek
 import javax.inject.Inject
 
 class WeatherWeekOuterAdapter @Inject constructor(
     private val glideRequestManager: RequestManager,
-    /*@ApplicationContext private val context: Context,*/
-    /*@ActivityContext private val activityContext: ActivityContext*/
 ) : RecyclerView.Adapter<WeatherWeekOuterAdapter.WeatherWeekOuterViewHolder>() {
 
     private val weatherWeekList = mutableListOf<List<WeatherWeek>>()
@@ -57,8 +51,8 @@ class WeatherWeekOuterAdapter @Inject constructor(
 
             val innerAdapter = WeatherWeekInnerAdapter(glideRequestManager)
             innerAdapter.listener = object : OnWeatherWeekItemInteraction {
-                override fun showDeatils(weatherWeek: WeatherWeek) {
-                    listener?.showDeatils(weatherWeek)
+                override fun showDetails(weatherWeek: WeatherWeek) {
+                    listener?.showDetails(weatherWeek)
                 }
 
             }

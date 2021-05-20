@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.annotation.GlideModule
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentWeatherTodayBinding
@@ -22,9 +20,6 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
 
     private val viewModel: WeatherViewModel by activityViewModels()
 
-//    @Inject
-//    lateinit var glideRequestManager: RequestManager
-
     @Inject
     lateinit var weatherTodayAdapter: WeatherTodayAdapter
 
@@ -39,12 +34,7 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
         Log.d(TAG, "setup: Start")
         setWeatherTodayRV()
         bind()
-//        start()
     }
-
-//    private fun start() {
-//        viewModel.fetchWeatherToday()
-//    }
 
     private fun bind() {
         viewModel.weatherTodayListLD.observe(viewLifecycleOwner, { weatherList ->
@@ -57,17 +47,6 @@ class WeatherTodayFragment : BaseFragment<FragmentWeatherTodayBinding>() {
                     Log.d(TAG, "bind: setEmptyList")
                 }
         })
-
-
-        /*
-        viewModel.weatherTodayListLD.observe(viewLifecycleOwner){
-            var weatherText = " - - - "
-            it?.forEach {
-               weatherText = it.toString() + "\n\n" + weatherText
-            }
-            binding.tvWeatherToday.text = weatherText
-        }
-        */
     }
 
     private fun setWeatherTodayRV() {

@@ -1,14 +1,16 @@
 package hr.trailovic.weatherqinfo.viewweek
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import hr.trailovic.weatherqinfo.*
+import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.databinding.ItemWeatherWeekInnerBinding
 import hr.trailovic.weatherqinfo.model.WeatherWeek
+import hr.trailovic.weatherqinfo.oneDecimal
+import hr.trailovic.weatherqinfo.toShortDateString
+import hr.trailovic.weatherqinfo.toWeatherIconUrl
 
 class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
     RecyclerView.Adapter<WeatherWeekInnerAdapter.WeatherWeekInnerViewHolder>() {
@@ -45,7 +47,7 @@ class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
         RecyclerView.ViewHolder(itemWeatherWeekInnerBinding.root) {
         init {
             itemWeatherWeekInnerBinding.root.setOnLongClickListener {
-                listener?.showDeatils(weatherWeekList[layoutPosition])
+                listener?.showDetails(weatherWeekList[layoutPosition])
                 true
             }
         }
@@ -67,5 +69,5 @@ class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
 }
 
 interface OnWeatherWeekItemInteraction {
-    fun showDeatils(weatherWeek: WeatherWeek)
+    fun showDetails(weatherWeek: WeatherWeek)
 }

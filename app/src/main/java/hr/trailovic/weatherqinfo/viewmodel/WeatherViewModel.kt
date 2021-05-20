@@ -11,12 +11,9 @@ import hr.trailovic.weatherqinfo.convertWeatherTodayApiResponse
 import hr.trailovic.weatherqinfo.convertWeatherWeekApiResponse
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.repo.WeatherRepository
-import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -48,19 +45,15 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private var newCityName = ""
     private val cityObservable: Subject<String> = PublishSubject.create()
-    private val xx = cityObservable.toSerialized().subscribeOn(Schedulers.io())
-//    private val xxx: Observable<String> = PublishObservable
-//    private val cityNameMLD = MutableLiveData<String>()
-
+    private val cityObservableSubscribed = cityObservable.toSerialized().subscribeOn(Schedulers.io())
 
     /*city*/
 
     fun removeCityData(city: City) {
         viewModelScope.launch {
             weatherRepo.removeCity(city)
-            /*not needed, I think so far ...*/
-//            weatherRepo.removeWeatherTodayByCityName(city.name)
-//            weatherRepo.removeWeatherWeekByCityName(city.name)
+            /*Weather Today and Weather week data will be re-fetched
+             after city DB status is changed*/
         }
     }
 
@@ -93,8 +86,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     private fun checkAndAddCity() {
         Log.d(TAG, "checkAndAddCity: Started")
 
-//        val d = cityObservable
-        xx
+        cityObservableSubscribed
             .observeOn(Schedulers.io())
             .map {
                 Log.d(TAG, "checkAndAddCity: map: |${it}|")
@@ -105,16 +97,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                 Log.d(TAG, "checkAndAddCity: FlatMap running on ${Thread.currentThread().name}")
                 WeatherTodayResponseWrapper(weatherRepo.fetchCoordinatesForCity(it))
             }
-//            .map {
-//                Log.d(TAG, "checkAndAddCity: response code: ${it.cod}")
-//                val new: WeatherTodayResponseWrapper
-//                if (it.cod == 200)
-//                    new = WeatherTodayResponseWrapper(it)
-//                else
-//                    new = WeatherTodayResponseWrapper(null)
-//                new
-//            }
-////            .onErrorResumeNext(Observable.just(WeatherTodayResponseWrapper(null)))
             .subscribe(object : Observer<WeatherTodayResponseWrapper> {
                 override fun onSubscribe(d: Disposable) {
                     disposables.add(d)
@@ -141,18 +123,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     )
                 }
             })
-//            .subscribeBy(
-//                onError = {
-//                    messageMLD.postValue("Error while fetching data $newCityName")
-//                    Log.d(TAG, "checkAndAddCity: Error running on ${Thread.currentThread().name}")
-//                    Log.e(TAG, "checkAndAddCity: ", it)
-//                },
-//                onNext = {
-//                    weatherRepo.addCity(City(newCityName, it.coord.lon, it.coord.lat))
-//                }
-//            )
-
-//        disposables.add(d)
     }
 
     /*weather today*/
@@ -260,10 +230,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     Log.d(TAG, "fetchWeatherWeek: onComplete")
                 }
             })
-    }
-
-    fun loadWeatherWeek() {
-
     }
 
     override fun onCleared() {

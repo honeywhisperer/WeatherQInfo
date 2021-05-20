@@ -30,8 +30,6 @@ data class WeatherWeek(
 // --- API response
 
 data class WeatherWeekResponse(
-//    @field:Json(name = "cod")
-//    val cod: Int,
     @field:Json(name = "lat")
     val lat: Double,
     @field:Json(name = "lon")

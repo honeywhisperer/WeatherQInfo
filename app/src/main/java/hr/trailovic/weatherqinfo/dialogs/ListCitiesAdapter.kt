@@ -1,7 +1,6 @@
 package hr.trailovic.weatherqinfo.dialogs
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hr.trailovic.weatherqinfo.databinding.ItemCityBinding

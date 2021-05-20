@@ -48,7 +48,7 @@ fun showDialog(
 fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
-    val date = Date((this + timezoneOffset) * 1)
+    val date = Date(this + timezoneOffset)
     return format.format(date)
 }
 
@@ -58,7 +58,7 @@ fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
 fun Long.toDateString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
-    val date = Date((this + timezoneOffset) * 1)
+    val date = Date(this + timezoneOffset)
     return format.format(date)
 }
 
@@ -68,7 +68,7 @@ fun Long.toDateString(timezoneOffset: Int = 0): String {
 fun Long.toShortDateString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
-    val date = Date((this + timezoneOffset) * 1)
+    val date = Date(this + timezoneOffset)
     return format.format(date)
 }
 
@@ -79,7 +79,7 @@ fun Long.toTimeString(timezoneOffset: Int = 0): String {
 //    val format = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
     val format = SimpleDateFormat("HH:mm", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // *** UTC or GMT? any difference?
-    val date = Date((this + timezoneOffset) * 1)
+    val date = Date(this + timezoneOffset)
     return format.format(date)
 }
 
@@ -111,11 +111,11 @@ fun String.humidity(): String {
     return "$this%"
 }
 
-fun String.windSpeed(): String{
+fun String.windSpeed(): String {
     return "${this}m/s"
 }
 
-fun String.rain(): String{
+fun String.rain(): String {
     return "${this}mm"
 }
 
@@ -147,10 +147,6 @@ fun convertWeatherTodayApiResponse(
         weatherTodayResponse.weather[0].main,
         weatherTodayResponse.weather[0].description,
         weatherTodayResponse.weather[0].icon,
-//        weatherTodayResponse.coord.lon,
-//        weatherTodayResponse.coord.lat,
-//        System.currentTimeMillis(),
-//        (weatherTodayResponse.dt + weatherTodayResponse.timezone) * 1000
     )
 
 fun convertWeatherWeekApiResponse(

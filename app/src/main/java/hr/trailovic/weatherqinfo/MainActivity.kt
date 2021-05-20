@@ -16,7 +16,7 @@ import hr.trailovic.weatherqinfo.dialogs.ListCitiesFragment
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 
-private const val TAG = "MA:::"
+private const val TAG = "mA:::"
 private const val APP_PREFS_NAME = "WeatherQPrefsFile"
 private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 
@@ -101,8 +101,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 true
             }
             R.id.action_cities->{
-                //todo
-//                Toast.makeText(this, "To be implemented (Remove individual cities from the list)", Toast.LENGTH_SHORT).show()
                 ListCitiesFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
@@ -113,5 +111,4 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             else -> false
         }
     }
-
 }

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.databinding.FragmentListCitiesBinding
 import hr.trailovic.weatherqinfo.model.City
 import hr.trailovic.weatherqinfo.setFullScreen

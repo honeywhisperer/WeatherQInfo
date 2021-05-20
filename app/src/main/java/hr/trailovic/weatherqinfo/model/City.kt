@@ -7,8 +7,8 @@ import java.util.*
 
 @Entity
 data class City(
-    /*@ColumnInfo*/ @PrimaryKey val name: String,
-                    @ColumnInfo val lon: Double,
-                    @ColumnInfo val lat: Double,
-    /*@PrimaryKey*/ @ColumnInfo val id: String = UUID.randomUUID().toString()
+    @PrimaryKey val name: String,
+    @ColumnInfo val lon: Double,
+    @ColumnInfo val lat: Double,
+    @ColumnInfo val id: String = UUID.randomUUID().toString()
 )

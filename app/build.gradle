@@ -81,7 +81,6 @@ dependencies {
     releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0' // Chuck: shows log on device
 
     // Glide
-//    implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
@@ -90,36 +89,5 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0' // RxJava + Retrofit
-/*
 
-    // Hilt
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-compiler:$hilt_version"
-
-// Room
-    def room_version = "2.2.6"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1" //transformations
-    implementation "androidx.room:room-ktx:$room_version" // Room coroutines
-    implementation "androidx.room:room-rxjava2:$room_version" // Room >> RxJava
-
-// ViewModel
-    implementation "androidx.fragment:fragment-ktx:1.3.2" // by viewModels
-
-// Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
-//    debugImplementation 'com.readystatesoftware.chuck:library:1.1.0' // Chuck
-//    releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0' // Chuck: shows log on device
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0") // Logging interceptor: shows improved log in Logcat
-
-
-// RxJava
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-*/
 }

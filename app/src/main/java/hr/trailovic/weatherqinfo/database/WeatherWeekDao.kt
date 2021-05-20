@@ -1,6 +1,5 @@
 package hr.trailovic.weatherqinfo.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,7 +11,7 @@ import io.reactivex.Observable
 interface WeatherWeekDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    /*suspend*/ fun addWeatherWeek(weatherWeek: WeatherWeek)
+    fun addWeatherWeek(weatherWeek: WeatherWeek)
 
     @Query("DELETE FROM weatherweek")
     suspend fun removeAllWeatherWeek()

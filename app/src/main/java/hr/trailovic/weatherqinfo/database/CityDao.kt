@@ -3,7 +3,6 @@ package hr.trailovic.weatherqinfo.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import hr.trailovic.weatherqinfo.model.City
-import io.reactivex.Flowable
 import io.reactivex.Observable
 
 

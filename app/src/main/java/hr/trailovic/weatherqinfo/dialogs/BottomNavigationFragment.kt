@@ -36,32 +36,27 @@ class BottomNavigationFragment : BottomSheetDialogFragment() {
     }
 
     private fun setNavigation() {
-        //todo
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.item_today -> {
                     displayFragment(WeatherTodayFragment.newInstance())
-//                    storeFragmentChange(MainActivity.FRAGMENT_TODAY)
                     dialog?.dismiss()
                     true
                 }
                 R.id.item_week -> {
                     displayFragment(WeatherWeekFragment.newInstance())
-//                    storeFragmentChange(MainActivity.FRAGMENT_WEEK)
                     dialog?.dismiss()
                     true
                 }
                 R.id.item_map->{
                     displayMessage("To be implemented: Map")
                     //todo
-//                    storeFragmentChange(MainActivity.FRAGMENT_MAP)
                     dialog?.dismiss()
                     true
                 }
                 R.id.item_my_location->{
                     displayMessage("To be implemented: My Location")
                     //todo
-//                    storeFragmentChange(MainActivity.FRAGMENT_LOCATION)
                     dialog?.dismiss()
                     true
                 }
@@ -73,22 +68,12 @@ class BottomNavigationFragment : BottomSheetDialogFragment() {
         }
     }
 
-//    private fun storeFragmentChange(value: String) {
-//        val prefs = requireActivity().getPreferences(Context.MODE_PRIVATE) ?: return
-//        with(prefs.edit()){
-//            putString(MainActivity.KEY_STORED_FRAGMENT, value)
-//            apply()
-//        }
-//    }
-
     private fun displayFragment(fragment: Fragment) {
         requireActivity()
             .supportFragmentManager
             .beginTransaction()
             .replace(R.id.mainFrame, fragment)
             .commit()
-
-        val x = requireActivity()
     }
 
     private fun displayMessage(message: String){

@@ -12,7 +12,7 @@ import kotlinx.android.parcel.Parcelize
 data class WeatherToday(
     @ColumnInfo val cod: Int,
 
-    @PrimaryKey/*@ColumnInfo*/ val city: String,
+    @PrimaryKey val city: String,
     @ColumnInfo val country: String,
 
     @ColumnInfo val sunrise: Long,
@@ -28,13 +28,7 @@ data class WeatherToday(
 
     @ColumnInfo val main: String,
     @ColumnInfo val description: String,
-    @ColumnInfo val icon: String, //http://openweathermap.org/img/wn/10d@2x.png
-//
-//    @ColumnInfo val lon: Double,
-//    @ColumnInfo val lat: Double,
-//
-//    @ColumnInfo val timeOfRead: Long,
-//    @ColumnInfo val timeOfData: Long,
+    @ColumnInfo val icon: String,
 ) : Parcelable
 
 // --- API response
@@ -146,17 +140,6 @@ data class Snow(
     val snow3h: Int,
 )
 
-// ***
-
-//todo
-//class WeatherTodayResponseWrapper private constructor(){
-//    private var weatherTodayResponseInstance: WeatherTodayResponse?=null
-//    fun get() = weatherTodayResponseInstance
-//    companion object{
-//        fun new(weatherTodayResponse: WeatherTodayResponse?) = WeatherTodayResponseWrapper().apply {
-//            weatherTodayResponseInstance = weatherTodayResponse
-//        }
-//    }
-//}
+// --- Wrapper
 
 data class WeatherTodayResponseWrapper(val weatherTodayResponse: WeatherTodayResponse?)

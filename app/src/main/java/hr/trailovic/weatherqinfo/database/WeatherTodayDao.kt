@@ -1,8 +1,6 @@
 package hr.trailovic.weatherqinfo.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import hr.trailovic.weatherqinfo.model.City
 import hr.trailovic.weatherqinfo.model.WeatherToday
 import io.reactivex.Observable
 
@@ -12,7 +10,7 @@ interface WeatherTodayDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    /*suspend*/ fun addWeatherToday(weatherToday: WeatherToday)
+    fun addWeatherToday(weatherToday: WeatherToday)
 
     @Delete
     suspend fun removeWeatherToday(weatherToday: WeatherToday)
