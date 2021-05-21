@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hr.trailovic.weatherqinfo.databinding.ItemCityBinding
 import hr.trailovic.weatherqinfo.model.City
+import hr.trailovic.weatherqinfo.oneDecimal
 import java.util.*
 
 class ListCitiesAdapter : RecyclerView.Adapter<ListCitiesAdapter.ListCitiesViewHolder>() {
@@ -45,7 +46,8 @@ class ListCitiesAdapter : RecyclerView.Adapter<ListCitiesAdapter.ListCitiesViewH
         }
 
         fun bind(city: City) {
-            itemCityBinding.tvCity.text = city.name
+            "${city.name}, ${city.country}".also { itemCityBinding.tvCity.text = it }
+            "lon: ${city.lon.oneDecimal()}, lat: ${city.lat.oneDecimal()}".also { itemCityBinding.tvCoordinates.text = it }
             itemCityBinding.tvOrderNumber.text = (layoutPosition + 1).toString().format(Locale.ROOT, "%3s")
         }
     }

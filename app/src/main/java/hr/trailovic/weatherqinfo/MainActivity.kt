@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,9 +19,7 @@ import javax.inject.Inject
 
 private const val TAG = "mA:::"
 
-//private const val APP_PREFS_NAME = "WeatherQPrefsFile"
 private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
-
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -37,15 +34,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun setup() {
-//        openRxChannels()
+        openRxChannels()
         setAppBar()
         setInitView()
         bind()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        openRxChannels()
     }
 
     private fun openRxChannels() {
@@ -54,12 +46,22 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun bind() {
         viewModel.messageLD.observe(this) {
-            if (it.isNotBlank())
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-            //todo can this (not blank check) be done better, completely in view model ?
+            showSnackbar(it)
         }
         viewModel.loadingLD.observe(this) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun showSnackbar(message: String) {
+        //todo can this (not blank check) be done better, completely in view model ?
+        if (message.isNotBlank()) {
+            val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
+            snackbar.setAction("Dismiss") {
+                viewModel.dismissErrorMessage()
+                snackbar.dismiss()
+            }
+            snackbar.show()
         }
     }
 
@@ -72,25 +74,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun setInitView() {
-//        val prefs = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE)
-        val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
-
-//        val editor = getSharedPreferences(APP_PREFS_NAME, MODE_PRIVATE).edit()
-        val editor = prefs.edit()
-        editor.putBoolean(KEY_FIRST_START, false)
-        editor.apply()
-
-        val welcomeMessage: String
-
         displayFragment(this, WeatherTodayFragment.newInstance())
+
+        val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
 
         if (isThisFirstApplicationStart) {
             InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
-            welcomeMessage = "W E L C O M E"
-        } else {
-            welcomeMessage = "W E L C O M E   B A C K"
         }
-        Toast.makeText(this, welcomeMessage, Toast.LENGTH_SHORT).show()
+
+        val editor = prefs.edit()
+        editor.putBoolean(KEY_FIRST_START, false)
+        editor.apply()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

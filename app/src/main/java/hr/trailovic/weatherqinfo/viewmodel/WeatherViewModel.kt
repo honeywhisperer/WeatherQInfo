@@ -77,12 +77,16 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
         cityObservable.onNext(newCityName)
     }
 
+    fun dismissErrorMessage() {
+        messageMLD.postValue("")
+    }
+
     fun getAllCitiesLD(): LiveData<List<City>> {
         return weatherRepo.getAllCitiesLD()
     }
 
     fun openRxChannels() {
-        if (areRxChannelsOpen.not()){
+        if (areRxChannelsOpen.not()) {
             checkAndAddCity()
             fetchWeatherToday()
             fetchWeatherWeek()
@@ -146,7 +150,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         weatherTodayResponseWrapper.weatherTodayResponse?.let { weatherTodayResponse ->
                             if (weatherTodayResponse.cod == 200) {
                                 val resp = weatherTodayResponse.coord
-                                weatherRepo.addCity(City(newCityName, resp.lon, resp.lat))
+                                val country = weatherTodayResponse.sys.country
+                                val validCityName = newCityName.substringBefore(",")
+                                weatherRepo.addCity(City(validCityName, country, resp.lon, resp.lat))
                             } else {
                                 messageMLD.postValue("Error while fetching data $newCityName")
                                 Log.d(TAG, "Error while fetching data $newCityName (cod != 200)")
@@ -207,7 +213,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             .subscribe(object : Observer<WeatherToday> {
                 override fun onSubscribe(d: Disposable) {
                     disposables.add(d)
-                    Log.d(TAG, "onSubscribe: ")
+                    Log.d(TAG, "onSubscribe: Today")
                 }
 
                 override fun onNext(t: WeatherToday) {
@@ -216,18 +222,18 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         ?: emptyList<WeatherToday>().toMutableList()
                     weatherValue.add(t)
                     weatherTodayListMLD.postValue(weatherValue)
-                    Log.d(TAG, "onNext: ${t.city}")
+                    Log.d(TAG, "onNext: Today ${t.cityFullName}")
                     loadingMLD.postValue(false)//***
                 }
 
                 override fun onError(e: Throwable) {
                     messageMLD.postValue("Error fetching/storing weather")
-                    Log.e(TAG, "fetchWeatherToday: onError: ${e.message}", e)
+                    Log.e(TAG, "onError: Today ${e.message}", e)
                     loadingMLD.postValue(false)//***
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "fetchWeatherToday: onComplete")
+                    Log.d(TAG, "onComplete: Today")
                 }
             })
     }
@@ -253,13 +259,13 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         loadingMLD.postValue(true)//***
                     }
                     .map {
-                        convertWeatherWeekApiResponse(city.name, it)
+                        convertWeatherWeekApiResponse(city.fullName, it)
                     }
             }
             .subscribe(object : Observer<List<WeatherWeek>> {
                 override fun onSubscribe(d: Disposable) {
                     disposables.add(d)
-                    Log.d(TAG, "onSubscribe: ")
+                    Log.d(TAG, "onSubscribe: Week")
                 }
 
                 override fun onNext(t: List<WeatherWeek>) {
@@ -276,18 +282,18 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         ?: emptyList<List<WeatherWeek>>().toMutableList()
                     weatherListValue.add(t)
                     weatherWeekListListMLD.postValue(weatherListValue)
-                    Log.d(TAG, "onNext: ${t[0].location}")
+                    Log.d(TAG, "onNext: Week ${t[0].location}")
                     loadingMLD.postValue(false)//***
                 }
 
                 override fun onError(e: Throwable) {
                     messageMLD.postValue("Error fetching/storing weather week")
-                    Log.e(TAG, "fetchWeatherWeek: onError: ${e.message}", e)
+                    Log.e(TAG, "fetchWeatherWeek: onError: Week ${e.message}", e)
                     loadingMLD.postValue(false)//***
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "fetchWeatherWeek: onComplete")
+                    Log.d(TAG, "fetchWeatherWeek: Week onComplete")
                 }
             })
     }

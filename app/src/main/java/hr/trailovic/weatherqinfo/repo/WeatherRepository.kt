@@ -66,7 +66,7 @@ class WeatherRepository @Inject constructor(
     /*weather today - Api*/
 
     fun fetchWeatherTodayForCity(city: City): Observable<WeatherTodayResponse> {
-        return apiService.getCurrentWeatherForTodayRx(city.name)
+        return apiService.getCurrentWeatherForTodayRx(city.fullName)
     }
 
 //    fun fetchCoordinatesForCity(cityName: String): Observable<WeatherTodayResponse> {

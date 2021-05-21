@@ -62,5 +62,3 @@ class InfoFirstStartFragment : DialogFragment() {
         fun newInstance() = InfoFirstStartFragment()
     }
 }
-
-//todo

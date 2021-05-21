@@ -12,8 +12,9 @@ import kotlinx.android.parcel.Parcelize
 data class WeatherToday(
     @ColumnInfo val cod: Int,
 
-    @PrimaryKey val city: String,
+    @ColumnInfo val city: String,
     @ColumnInfo val country: String,
+
 
     @ColumnInfo val sunrise: Long,
     @ColumnInfo val sunset: Long,
@@ -29,6 +30,8 @@ data class WeatherToday(
     @ColumnInfo val main: String,
     @ColumnInfo val description: String,
     @ColumnInfo val icon: String,
+
+    @PrimaryKey val cityFullName: String = "$city, $country",
 ) : Parcelable
 
 // --- API response
