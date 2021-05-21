@@ -1,20 +1,43 @@
 package hr.trailovic.weatherqinfo.dialogs
 
+import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import hr.trailovic.weatherqinfo.base.BaseFragment
+import androidx.fragment.app.DialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentInfoFirstStartBinding
+import hr.trailovic.weatherqinfo.setFullScreen
 
-class InfoFirstStartFragment : BaseFragment<FragmentInfoFirstStartBinding>() {
-    override fun createViewBinding(
+class InfoFirstStartFragment : DialogFragment() {
+
+    private var _binding: FragmentInfoFirstStartBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentInfoFirstStartBinding {
-        return FragmentInfoFirstStartBinding.inflate(inflater, container, false)
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentInfoFirstStartBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun setup() {
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setFullScreen()
         setInfoText()
+        setListeners()
+    }
+
+    private fun setListeners() {
+        binding.root.setOnClickListener {
+            dialog?.dismiss()
+        }
     }
 
     private fun setInfoText() {

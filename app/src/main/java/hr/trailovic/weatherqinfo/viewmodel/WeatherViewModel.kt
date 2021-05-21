@@ -30,6 +30,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private val disposables = CompositeDisposable()
 
+    private var areRxChannelsOpen = false
+
     private val messageMLD = MutableLiveData<String>()
     public val messageLD: LiveData<String> = messageMLD
 
@@ -80,9 +82,12 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     }
 
     fun openRxChannels() {
-        checkAndAddCity()
-        fetchWeatherToday()
-        fetchWeatherWeek()
+        if (areRxChannelsOpen.not()){
+            checkAndAddCity()
+            fetchWeatherToday()
+            fetchWeatherWeek()
+            areRxChannelsOpen = true
+        }
     }
 
     /*Rx*/
@@ -193,6 +198,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                 weatherRepo.fetchWeatherTodayForCity(city)
                     .also {
                         Log.d(TAG, "fetchWeatherToday: ${city.name}")
+                        loadingMLD.postValue(true)//***
                     }
                     .map {
                         convertWeatherTodayApiResponse(city.name, it)
@@ -211,11 +217,13 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     weatherValue.add(t)
                     weatherTodayListMLD.postValue(weatherValue)
                     Log.d(TAG, "onNext: ${t.city}")
+                    loadingMLD.postValue(false)//***
                 }
 
                 override fun onError(e: Throwable) {
                     messageMLD.postValue("Error fetching/storing weather")
                     Log.e(TAG, "fetchWeatherToday: onError: ${e.message}", e)
+                    loadingMLD.postValue(false)//***
                 }
 
                 override fun onComplete() {
@@ -242,6 +250,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                 weatherRepo.fetchWeatherWeekForCity(city)
                     .also {
                         Log.d(TAG, "fetchWeatherWeek: ${city.name}")
+                        loadingMLD.postValue(true)//***
                     }
                     .map {
                         convertWeatherWeekApiResponse(city.name, it)
@@ -268,11 +277,13 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     weatherListValue.add(t)
                     weatherWeekListListMLD.postValue(weatherListValue)
                     Log.d(TAG, "onNext: ${t[0].location}")
+                    loadingMLD.postValue(false)//***
                 }
 
                 override fun onError(e: Throwable) {
                     messageMLD.postValue("Error fetching/storing weather week")
                     Log.e(TAG, "fetchWeatherWeek: onError: ${e.message}", e)
+                    loadingMLD.postValue(false)//***
                 }
 
                 override fun onComplete() {

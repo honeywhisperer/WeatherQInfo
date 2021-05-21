@@ -37,10 +37,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun setup() {
-        openRxChannels()
+//        openRxChannels()
         setAppBar()
         setInitView()
         bind()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        openRxChannels()
     }
 
     private fun openRxChannels() {
@@ -51,7 +56,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         viewModel.messageLD.observe(this) {
             if (it.isNotBlank())
                 Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-        //todo can this (not blank check) be done better, completely in view model ?
+            //todo can this (not blank check) be done better, completely in view model ?
         }
         viewModel.loadingLD.observe(this) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
@@ -77,11 +82,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         val welcomeMessage: String
 
+        displayFragment(this, WeatherTodayFragment.newInstance())
+
         if (isThisFirstApplicationStart) {
-            displayFragment(this, InfoFirstStartFragment.newInstance())
+            InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
             welcomeMessage = "W E L C O M E"
         } else {
-            displayFragment(this, WeatherTodayFragment.newInstance())
             welcomeMessage = "W E L C O M E   B A C K"
         }
         Toast.makeText(this, welcomeMessage, Toast.LENGTH_SHORT).show()
@@ -113,7 +119,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 true
             }
             R.id.action_info -> {
-                displayFragment(this, InfoFirstStartFragment.newInstance())
+                InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
             else -> false
