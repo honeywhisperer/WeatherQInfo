@@ -9,7 +9,7 @@ import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.databinding.ItemWeatherWeekInnerBinding
 import hr.trailovic.weatherqinfo.model.WeatherWeek
 import hr.trailovic.weatherqinfo.oneDecimal
-import hr.trailovic.weatherqinfo.toShortDateString
+import hr.trailovic.weatherqinfo.toDateNameString
 import hr.trailovic.weatherqinfo.toWeatherIconUrl
 
 class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
@@ -53,7 +53,7 @@ class WeatherWeekInnerAdapter(private val glideRequestManager: RequestManager) :
         }
         fun bind(weatherWeek: WeatherWeek) {
             with(itemWeatherWeekInnerBinding) {
-                tvDate.text = weatherWeek.sunrise.toShortDateString()
+                tvDate.text = weatherWeek.sunrise.toDateNameString()
                 tvTemperatureMax.text = weatherWeek.tempMax.oneDecimal()
                 tvTemperatureMin.text = weatherWeek.tempMin.oneDecimal()
                 glideRequestManager

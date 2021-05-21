@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import hr.trailovic.weatherqinfo.databinding.ItemCityBinding
 import hr.trailovic.weatherqinfo.model.City
+import java.util.*
 
 class ListCitiesAdapter : RecyclerView.Adapter<ListCitiesAdapter.ListCitiesViewHolder>() {
 
@@ -45,6 +46,7 @@ class ListCitiesAdapter : RecyclerView.Adapter<ListCitiesAdapter.ListCitiesViewH
 
         fun bind(city: City) {
             itemCityBinding.tvCity.text = city.name
+            itemCityBinding.tvOrderNumber.text = (layoutPosition + 1).toString().format(Locale.ROOT, "%3s")
         }
     }
 }

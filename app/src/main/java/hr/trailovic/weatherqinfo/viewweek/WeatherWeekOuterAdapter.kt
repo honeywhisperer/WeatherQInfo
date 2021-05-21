@@ -2,6 +2,7 @@ package hr.trailovic.weatherqinfo.viewweek
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -18,11 +19,12 @@ class WeatherWeekOuterAdapter @Inject constructor(
     var listener: OnWeatherWeekItemInteraction? = null
 
     fun setItems(list: List<List<WeatherWeek>>) {
+        val diff = DiffUtil.calculateDiff(WeatherWeekDiffCallback(weatherWeekList, list))
         with(weatherWeekList) {
             clear()
             addAll(list)
         }
-        notifyDataSetChanged()
+        diff.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherWeekOuterViewHolder {
@@ -62,5 +64,22 @@ class WeatherWeekOuterAdapter @Inject constructor(
             }
             innerAdapter.setItems(oneLocationWeatherWeek)
         }
+    }
+}
+
+class WeatherWeekDiffCallback(
+    private val oldList: List<List<WeatherWeek>>,
+    private val newList: List<List<WeatherWeek>>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition][0].tempDay == newList[newItemPosition][0].tempDay
     }
 }

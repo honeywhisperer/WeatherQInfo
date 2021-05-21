@@ -42,9 +42,11 @@ fun showDialog(
 
 /*Date and Time*/
 
-/*
-*  intended to be used on parameter that represents seconds (not millis)
-* */
+/**
+ * 20/05/2020 14:25:05
+ *
+ * intended to be used on parameter that represents seconds (not millis)
+**/
 fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
@@ -52,9 +54,11 @@ fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
     return format.format(date)
 }
 
-/*
-*  intended to be used on parameter that represents seconds (not millis)
-* */
+/**
+ * 20/05/2021
+ *
+ * intended to be used on parameter that represents seconds (not millis)
+**/
 fun Long.toDateString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
@@ -62,19 +66,37 @@ fun Long.toDateString(timezoneOffset: Int = 0): String {
     return format.format(date)
 }
 
-/*
-*  intended to be used on parameter that represents seconds (not millis)
-* */
-fun Long.toShortDateString(timezoneOffset: Int = 0): String {
-    val format = SimpleDateFormat("dd/MM", Locale.ROOT)
+/**
+ * Thursday, May 20, '21
+ *
+ * intended to be used on parameter that represents seconds (not millis)
+**/
+fun Long.toLongDateNameString(timezoneOffset: Int = 0): String {
+    val format = SimpleDateFormat("EEEE, MMM d, ''yy", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
     val date = Date(this + timezoneOffset)
     return format.format(date)
 }
 
-/*
-*  intended to be used on parameter that represents seconds (not millis)
-* */
+/**
+ * 20/05
+ *
+ * Thu
+ *
+ * intended to be used on parameter that represents seconds (not millis)
+**/
+fun Long.toDateNameString(timezoneOffset: Int = 0): String {
+    val format = SimpleDateFormat("dd/MM\nEEE", Locale.ROOT)
+    format.timeZone = TimeZone.getTimeZone("UTC") // ***
+    val date = Date(this + timezoneOffset)
+    return format.format(date)
+}
+
+/**
+ * 14:25
+ *
+ * intended to be used on parameter that represents seconds (not millis)
+**/
 fun Long.toTimeString(timezoneOffset: Int = 0): String {
 //    val format = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
     val format = SimpleDateFormat("HH:mm", Locale.ROOT)
@@ -99,26 +121,44 @@ fun String.capitalizeEveryWord(): String {
 
 /*String add units*/
 
+/**
+ * Use this to add unit at the end
+**/
 fun String.temperature(): String {
     return "$this°C"
 }
 
+/**
+ * Use this to add unit at the end
+ **/
 fun String.pressure(): String {
     return "$this hPa"
 }
 
+/**
+ * Use this to add unit at the end
+ **/
 fun String.humidity(): String {
     return "$this%"
 }
 
+/**
+ * Use this to add unit at the end
+ **/
 fun String.windSpeed(): String {
     return "${this}m/s"
 }
 
+/**
+ * Use this to add unit at the end
+ **/
 fun String.rain(): String {
     return "${this}mm"
 }
 
+/**
+ * Use this to create a text related to difference in measured temperature and real feel
+ **/
 fun Double.generateFeelsLikeTemperatureText(realTemperature: Double): String {
     return if (abs(this - realTemperature) < 0.6)
         "and feels the same"
@@ -175,10 +215,12 @@ fun convertWeatherWeekApiResponse(
     return listOfConverted
 }
 
-/*Dialog Fragment*/
+/*Weather API response*/
 
 fun String.toWeatherIconUrl() =
     BuildConfig.WEATHER_IMG_PREFIX + this + BuildConfig.WEATHER_IMG_SUFIX
+
+/*Dialog Fragment*/
 
 fun DialogFragment.setFullScreen() {
     dialog?.window?.setLayout(

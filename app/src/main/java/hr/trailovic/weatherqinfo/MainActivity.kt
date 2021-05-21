@@ -19,6 +19,7 @@ import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 import javax.inject.Inject
 
 private const val TAG = "mA:::"
+
 //private const val APP_PREFS_NAME = "WeatherQPrefsFile"
 private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 
@@ -48,7 +49,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private fun bind() {
         viewModel.messageLD.observe(this) {
-            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+            if (it.isNotBlank())
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+        //todo can this (not blank check) be done better, completely in view model ?
         }
         viewModel.loadingLD.observe(this) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
@@ -74,11 +77,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         val welcomeMessage: String
 
-        if (isThisFirstApplicationStart){
+        if (isThisFirstApplicationStart) {
             displayFragment(this, InfoFirstStartFragment.newInstance())
             welcomeMessage = "W E L C O M E"
-        }
-        else{
+        } else {
             displayFragment(this, WeatherTodayFragment.newInstance())
             welcomeMessage = "W E L C O M E   B A C K"
         }
@@ -106,11 +108,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
                 true
             }
-            R.id.action_cities->{
+            R.id.action_cities -> {
                 ListCitiesFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
-            R.id.action_info->{
+            R.id.action_info -> {
                 displayFragment(this, InfoFirstStartFragment.newInstance())
                 true
             }

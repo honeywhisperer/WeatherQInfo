@@ -2,6 +2,7 @@ package hr.trailovic.weatherqinfo.viewtoday
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -18,11 +19,12 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
     private val weatherList = mutableListOf<WeatherToday>()
 
     fun setItems(list: List<WeatherToday>) {
+        val diff = DiffUtil.calculateDiff(WeatherTodayDiffCallback(weatherList, list))
         with(weatherList) {
             clear()
             addAll(list)
         }
-        notifyDataSetChanged()
+        diff.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherTodayViewHolder {
@@ -45,12 +47,14 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
                 true
             }
         }
+
         fun bind(weatherToday: WeatherToday) {
             with(itemWeatherTodayBinding) {
                 tvLocation.text = weatherToday.city
                 tvDescription.text = weatherToday.description
                 tvTemperature.text = weatherToday.temp.oneDecimal().temperature()
-                tvTemperatureFeelsLike.text = weatherToday.feels_like.generateFeelsLikeTemperatureText(weatherToday.temp)
+                tvTemperatureFeelsLike.text =
+                    weatherToday.feels_like.generateFeelsLikeTemperatureText(weatherToday.temp)
 
                 glideRequestManager
                     .load(weatherToday.icon.toWeatherIconUrl())
@@ -66,4 +70,22 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
 
 interface OnWeatherTodayItemInteraction {
     fun showDetails(weatherToday: WeatherToday)
+}
+
+class WeatherTodayDiffCallback(
+    private val oldList: List<WeatherToday>,
+    private val newList: List<WeatherToday>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].temp == newList[newItemPosition].temp
+    }
+
 }

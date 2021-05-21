@@ -61,6 +61,7 @@ class DetailsWeekFragment : DialogFragment() {
         weatherWeekData?.let { weatherWeek ->
             with(binding) {
                 tvLocation.text = weatherWeek.location
+                tvDate.text = weatherWeek.sunrise.toLongDateNameString()
                 ("Sunrise " + weatherWeek.sunrise.toTimeString()).also { tvSunrise.text = it }
                 ("Sunset " + weatherWeek.sunset.toTimeString()).also { tvSunset.text = it }
                 ("Temperature " + weatherWeek.tempDay.oneDecimal()

@@ -61,6 +61,7 @@ class DetailsTodayFragment : DialogFragment() {
         weatherTodayData?.let {weatherToday->
             with(binding) {
                 tvCity.text = weatherToday.city
+                tvDate.text = weatherToday.sunrise.toLongDateNameString()
                 "Sunrise ${weatherToday.sunrise.toTimeString()}".also { tvSunrise.text = it }
                 "Sunset ${weatherToday.sunset.toTimeString()}".also { tvSunset.text = it }
                 ("Temperature " + weatherToday.temp.oneDecimal().temperature()).also { tvTemperature.text = it }
