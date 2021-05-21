@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogAddBinding
+import hr.trailovic.weatherqinfo.fixUserInput
 import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 
@@ -44,7 +45,7 @@ class DialogAddFragment : DialogFragment() {
             if (userInput.isBlank()) {
                 binding.etCityName.error = "City name is required"
             } else {
-                viewModel.addCity(userInput)
+                viewModel.addCity(userInput.fixUserInput())
                 dialog?.dismiss()
             }
         }

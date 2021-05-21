@@ -46,7 +46,7 @@ fun showDialog(
  * 20/05/2020 14:25:05
  *
  * intended to be used on parameter that represents seconds (not millis)
-**/
+ **/
 fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
@@ -58,7 +58,7 @@ fun Long.toDateTimeString(timezoneOffset: Int = 0): String {
  * 20/05/2021
  *
  * intended to be used on parameter that represents seconds (not millis)
-**/
+ **/
 fun Long.toDateString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
@@ -70,7 +70,7 @@ fun Long.toDateString(timezoneOffset: Int = 0): String {
  * Thursday, May 20, '21
  *
  * intended to be used on parameter that represents seconds (not millis)
-**/
+ **/
 fun Long.toLongDateNameString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("EEEE, MMM d, ''yy", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
@@ -84,7 +84,7 @@ fun Long.toLongDateNameString(timezoneOffset: Int = 0): String {
  * Thu
  *
  * intended to be used on parameter that represents seconds (not millis)
-**/
+ **/
 fun Long.toDateNameString(timezoneOffset: Int = 0): String {
     val format = SimpleDateFormat("dd/MM\nEEE", Locale.ROOT)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
@@ -96,7 +96,7 @@ fun Long.toDateNameString(timezoneOffset: Int = 0): String {
  * 14:25
  *
  * intended to be used on parameter that represents seconds (not millis)
-**/
+ **/
 fun Long.toTimeString(timezoneOffset: Int = 0): String {
 //    val format = SimpleDateFormat("HH:mm:ss", Locale.ROOT)
     val format = SimpleDateFormat("HH:mm", Locale.ROOT)
@@ -118,12 +118,23 @@ fun String.capitalizeEveryWord(): String {
     }
 }
 
+fun String.fixUserInput(): String {
+    val removedMultiWhitespaces = this.replace("\\s{1,}".toRegex(), " ")
+    val stringList = removedMultiWhitespaces.split(",")
+    val resultList = mutableListOf<String>()
+    stringList.forEach {
+        resultList.add(it.trim())
+    }
+    resultList[0] = resultList[0].capitalizeEveryWord()
+    return resultList.joinToString(",")
+}
+
 
 /*String add units*/
 
 /**
  * Use this to add unit at the end
-**/
+ **/
 fun String.temperature(): String {
     return "$this°C"
 }

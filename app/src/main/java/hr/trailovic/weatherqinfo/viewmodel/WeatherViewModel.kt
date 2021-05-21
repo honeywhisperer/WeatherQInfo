@@ -49,9 +49,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private var newCityName = ""
     private val cityObservable: Subject<String> = PublishSubject.create()
-    private val cityObservableSubscribed =
+    private val cityFlowable =
         cityObservable.toSerialized()
-            .toFlowable(BackpressureStrategy.BUFFER)/*.subscribeOn(Schedulers.io())*/
+            .toFlowable(BackpressureStrategy.BUFFER)
 
     /*city*/
 
@@ -99,7 +99,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     private fun checkAndAddCity() {
         Log.d(TAG, "checkAndAddCity: Started")
 
-        val d = cityObservableSubscribed
+        val d = cityFlowable
             .observeOn(Schedulers.io())
             .map {
                 Log.d(TAG, "checkAndAddCity: map: |${it}|")
@@ -109,50 +109,23 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             .map {
                 Log.d(TAG, "checkAndAddCity: FlatMap running on ${Thread.currentThread().name}")
                 WeatherTodayResponseWrapper(weatherRepo.fetchCoordinatesForCity(it))
-//                weatherRepo.fetchCoordinatesForCity(it)
             }
-//            .subscribe(object : Observer<WeatherTodayResponseWrapper> {
-//                override fun onSubscribe(d: Disposable) {
-//                    disposables.add(d)
-//                    Log.d(TAG, "checkAndAddCity: onSubscribe ${Thread.currentThread().name}")
-//                }
-//
-//                override fun onNext(t: WeatherTodayResponseWrapper) {
-//                    if (t.weatherTodayResponse != null && t.weatherTodayResponse.cod == 200) {
-//                        val resp = t.weatherTodayResponse.coord
-//                        weatherRepo.addCity(City(newCityName, resp.lon, resp.lat))
-//                    } else {
-//                        messageMLD.postValue("Error while fetching data $newCityName")
-//                    }
-//                }
-//
-//                override fun onError(e: Throwable) {
-//                    messageMLD.postValue("Error while fetching data $newCityName ... restart app")
-//                }
-//
-//                override fun onComplete() {
-//                    Log.d(
-//                        TAG,
-//                        "checkAndAddCity: onComplete called on ${Thread.currentThread().name}"
-//                    )
-//                }
-//            })
-////***
             .subscribe(object : Consumer<WeatherTodayResponseWrapper> {
                 override fun accept(t: WeatherTodayResponseWrapper?) {
-//                    if (t != null && t.weatherTodayResponse != null && t.weatherTodayResponse.cod == 200) {
-//                        val resp = t.weatherTodayResponse.coord
-//                        weatherRepo.addCity(City(newCityName, resp.lon, resp.lat))
-//                    } else {
-//                        messageMLD.postValue("Error while fetching data $newCityName")
-//                    }
                     t?.let { weatherTodayResponseWrapper ->
                         weatherTodayResponseWrapper.weatherTodayResponse?.let { weatherTodayResponse ->
                             if (weatherTodayResponse.cod == 200) {
                                 val resp = weatherTodayResponse.coord
                                 val country = weatherTodayResponse.sys.country
                                 val validCityName = newCityName.substringBefore(",")
-                                weatherRepo.addCity(City(validCityName, country, resp.lon, resp.lat))
+                                weatherRepo.addCity(
+                                    City(
+                                        validCityName,
+                                        country,
+                                        resp.lon,
+                                        resp.lat
+                                    )
+                                )
                             } else {
                                 messageMLD.postValue("Error while fetching data $newCityName")
                                 Log.d(TAG, "Error while fetching data $newCityName (cod != 200)")
@@ -164,24 +137,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     }
                 }
             })
-////***
-//            .subscribe(object : Consumer<WeatherTodayResponse?> {
-//                override fun accept(t: WeatherTodayResponse?) {
-//                    t?.let {
-//                        if (it.cod == 200) {
-//                            weatherRepo.addCity(City(newCityName, it.coord.lon, it.coord.lat))
-//                        } else {
-//                            messageMLD.postValue("Error while fetching data $newCityName")
-//                            Log.d(TAG, "Error while fetching data $newCityName (cod != 200)")
-//                        }
-//                    } ?: run {
-//                        messageMLD.postValue("Error while fetching data $newCityName")
-//                        Log.d(TAG, "Error while fetching data $newCityName (response == null)")
-//                    }
-//                }
-//            })
-
-
         disposables.add(d)
     }
 

@@ -60,7 +60,7 @@ class DetailsTodayFragment : DialogFragment() {
     private fun setInfo() {
         weatherTodayData?.let {weatherToday->
             with(binding) {
-                tvCity.text = weatherToday.city
+                tvCity.text = weatherToday.cityFullName
                 tvDate.text = weatherToday.sunrise.toLongDateNameString()
                 "Sunrise ${weatherToday.sunrise.toTimeString()}".also { tvSunrise.text = it }
                 "Sunset ${weatherToday.sunset.toTimeString()}".also { tvSunset.text = it }
