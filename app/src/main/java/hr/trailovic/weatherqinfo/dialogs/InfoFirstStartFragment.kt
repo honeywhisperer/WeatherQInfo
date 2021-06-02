@@ -5,30 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentInfoFirstStartBinding
 import hr.trailovic.weatherqinfo.setFullScreen
 
-class InfoFirstStartFragment : DialogFragment() {
+class InfoFirstStartFragment : BaseDialogFragment<FragmentInfoFirstStartBinding>() {
 
-    private var _binding: FragmentInfoFirstStartBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
+    override fun createViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentInfoFirstStartBinding.inflate(inflater, container, false)
-        return binding.root
+        container: ViewGroup?
+    ): FragmentInfoFirstStartBinding {
+        return FragmentInfoFirstStartBinding.inflate(inflater, container, false)
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun setup() {
         setFullScreen()
         setInfoText()
         setListeners()
@@ -44,6 +34,8 @@ class InfoFirstStartFragment : DialogFragment() {
         val infoText =
             """Weather Q Info
             |
+            |This app uses openwethermap.org api services.
+            |
             |Features:
             |1. Shows current weather situation for your cities
             |2. Shows weather forecast for the following 7 days 
@@ -53,6 +45,13 @@ class InfoFirstStartFragment : DialogFragment() {
             |1. Weather conditions for current location
             |2. Weather statuses on the map
             |3. ...
+            |
+            |
+            |************************
+            |*** Important Note ****
+            |************************
+            |
+            |Make sure to provide your openweathermap.org api key before start using application
         """.trimMargin()
         binding.tvAppInfo.text = infoText
     }

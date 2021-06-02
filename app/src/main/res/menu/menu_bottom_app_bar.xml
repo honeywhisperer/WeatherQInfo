@@ -22,4 +22,9 @@
         android:id="@+id/action_info"
         android:title="@string/info_screen"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_api_key"
+        android:title="@string/manage_api_key"
+        app:showAsAction="never"/>
 </menu>

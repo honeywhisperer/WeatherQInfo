@@ -9,15 +9,13 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.*
+import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDetailsWeekBinding
 import hr.trailovic.weatherqinfo.model.WeatherWeek
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsWeekFragment : DialogFragment() {
-
-    private var _binding: FragmentDetailsWeekBinding? = null
-    private val binding get() = _binding!!
+class DetailsWeekFragment : BaseDialogFragment<FragmentDetailsWeekBinding>() {
 
     private var weatherWeekData: WeatherWeek? = null
 
@@ -31,21 +29,14 @@ class DetailsWeekFragment : DialogFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentDetailsWeekBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentDetailsWeekBinding {
+        return FragmentDetailsWeekBinding.inflate(inflater, container, false)
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun setup() {
         setFullScreen()
         setInfo()
         setListeners()

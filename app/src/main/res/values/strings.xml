@@ -12,4 +12,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="show_cities">Show Cities</string>
     <string name="info_screen">Info Screen</string>
+    <string name="manage_api_key">Manage Api Key</string>
+    <string name="enter_your_operweathermap_org_api_key_here">your operweathermap.org API key</string>
+    <string name="get_api_key">Get Api key</string>
 </resources>

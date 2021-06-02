@@ -12,7 +12,8 @@ private const val TAG = "wR:::"
 
 class WeatherRepository @Inject constructor(
     private val appDatabase: AppDatabase,
-    private val apiService: WeatherService
+    private val apiService: WeatherService,
+    private val prefsHelper: SharedPreferencesHelper,
 ) {
 
     private val weatherTodayDao = appDatabase.weatherTodayDao()
@@ -66,7 +67,7 @@ class WeatherRepository @Inject constructor(
     /*weather today - Api*/
 
     fun fetchWeatherTodayForCity(city: City): Observable<WeatherTodayResponse> {
-        return apiService.getCurrentWeatherForTodayRx(city.fullName)
+        return apiService.getCurrentWeatherForTodayRx(city.fullName, prefsHelper.readApiKey())
     }
 
 //    fun fetchCoordinatesForCity(cityName: String): Observable<WeatherTodayResponse> {
@@ -77,7 +78,7 @@ class WeatherRepository @Inject constructor(
         var response: WeatherTodayResponse?
         try {
             Log.d(TAG, "fetchCoordinatesForCity: try: we are here")
-            response = apiService.getCurrentWeatherForTodayRx(cityName).blockingFirst()
+            response = apiService.getCurrentWeatherForTodayRx(cityName, prefsHelper.readApiKey()).blockingFirst()
         } catch (e: Throwable) {
             Log.e(TAG, "fetchCoordinatesForCity: catch: we are here", e)
             response = null
@@ -108,6 +109,6 @@ class WeatherRepository @Inject constructor(
     /*weather week - Api*/
 
     fun fetchWeatherWeekForCity(city: City): Observable<WeatherWeekResponse> {
-        return apiService.getWeatherForWeekRx(city.lon, city.lat)
+        return apiService.getWeatherForWeekRx(city.lon, city.lat, appid = prefsHelper.readApiKey())
     }
 }

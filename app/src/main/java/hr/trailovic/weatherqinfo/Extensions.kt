@@ -67,12 +67,13 @@ fun Long.toDateString(timezoneOffset: Int = 0): String {
 }
 
 /**
- * Thursday, May 20, '21
+ * Thursday, May 20
  *
  * intended to be used on parameter that represents seconds (not millis)
  **/
 fun Long.toLongDateNameString(timezoneOffset: Int = 0): String {
-    val format = SimpleDateFormat("EEEE, MMM d, ''yy", Locale.ROOT)
+//    val format = SimpleDateFormat("EEE, MMM d, ''yy", Locale.ROOT)
+    val format = SimpleDateFormat("EEEE, MMM d", Locale.US)
     format.timeZone = TimeZone.getTimeZone("UTC") // ***
     val date = Date(this + timezoneOffset)
     return format.format(date)
@@ -246,4 +247,9 @@ fun DialogFragment.setWidthPercent(percentage: Int) {
     val rect = dm.run { Rect(0, 0, widthPixels, heightPixels) }
     val percentWidth = rect.width() * percent
     dialog?.window?.setLayout(percentWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+}
+
+fun someTest(){
+    val x = IntArray(10){it*it}
+
 }

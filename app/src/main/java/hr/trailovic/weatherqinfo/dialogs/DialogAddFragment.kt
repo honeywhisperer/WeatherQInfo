@@ -1,40 +1,28 @@
 package hr.trailovic.weatherqinfo.dialogs
 
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
+import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogAddBinding
 import hr.trailovic.weatherqinfo.fixUserInput
 import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 
 @AndroidEntryPoint
-class DialogAddFragment : DialogFragment() {
-
-    private var _binding: FragmentDialogAddBinding? = null
-    private val binding get() = _binding!!
+class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
 
     private val viewModel: WeatherViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentDialogAddBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentDialogAddBinding {
+        return FragmentDialogAddBinding.inflate(inflater, container, false)
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun setup() {
         setFullScreen()
         setListeners()
     }

@@ -9,25 +9,26 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseActivity
 import hr.trailovic.weatherqinfo.databinding.ActivityMainBinding
-import hr.trailovic.weatherqinfo.dialogs.BottomNavigationFragment
-import hr.trailovic.weatherqinfo.dialogs.DialogAddFragment
-import hr.trailovic.weatherqinfo.dialogs.InfoFirstStartFragment
-import hr.trailovic.weatherqinfo.dialogs.ListCitiesFragment
+import hr.trailovic.weatherqinfo.dialogs.*
+import hr.trailovic.weatherqinfo.model.SharedPreferencesHelper
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 import javax.inject.Inject
 
 private const val TAG = "mA:::"
 
-private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
+//private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private val viewModel: WeatherViewModel by viewModels()
 
+//    @Inject
+//    lateinit var prefs: SharedPreferences
+
     @Inject
-    lateinit var prefs: SharedPreferences
+    lateinit var prefsHelper: SharedPreferencesHelper
 
     override fun getBinding(): ActivityMainBinding {
         return ActivityMainBinding.inflate(layoutInflater)
@@ -76,15 +77,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun setInitView() {
         displayFragment(this, WeatherTodayFragment.newInstance())
 
-        val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
+//        val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
+        val isThisFirstApplicationStart = prefsHelper.readFirstStart()
 
         if (isThisFirstApplicationStart) {
             InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
         }
 
-        val editor = prefs.edit()
-        editor.putBoolean(KEY_FIRST_START, false)
-        editor.apply()
+//        val editor = prefs.edit()
+//        editor.putBoolean(KEY_FIRST_START, false)
+//        editor.apply()
+
+        prefsHelper.storeFirstStart(false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -114,6 +118,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             }
             R.id.action_info -> {
                 InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
+                true
+            }
+            R.id.action_api_key->{
+                DialogManageApiKeyFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
             else -> false

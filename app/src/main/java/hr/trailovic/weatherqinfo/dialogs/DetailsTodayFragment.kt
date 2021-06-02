@@ -2,22 +2,18 @@ package hr.trailovic.weatherqinfo.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.*
+import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDetailsTodayBinding
 import hr.trailovic.weatherqinfo.model.WeatherToday
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsTodayFragment : DialogFragment() {
-
-    private var _binding: FragmentDetailsTodayBinding? = null
-    private val binding get() = _binding!!
+class DetailsTodayFragment : BaseDialogFragment<FragmentDetailsTodayBinding>() {
 
     private var weatherTodayData: WeatherToday? = null
 
@@ -31,21 +27,14 @@ class DetailsTodayFragment : DialogFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentDetailsTodayBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentDetailsTodayBinding {
+        return FragmentDetailsTodayBinding.inflate(inflater, container, false)
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun setup() {
         setFullScreen()
         setInfo()
         setListeners()
@@ -83,8 +72,8 @@ class DetailsTodayFragment : DialogFragment() {
     }
 
     companion object {
-        private const val ARG_PAR = "weather today data"
 
+        private const val ARG_PAR = "weather today data"
         @JvmStatic
         fun newInstance(weatherToday: WeatherToday) = DetailsTodayFragment().apply {
             arguments = Bundle().apply {

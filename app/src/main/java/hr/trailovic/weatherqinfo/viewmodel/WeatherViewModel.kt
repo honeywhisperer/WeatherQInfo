@@ -40,10 +40,10 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private val weatherTodayListMLD = MutableLiveData<List<WeatherToday>?>()
     public val weatherTodayListLD: LiveData<List<WeatherToday>?> = weatherTodayListMLD
-
-    private val weatherWeekListMLD = MutableLiveData<List<WeatherWeek>?>()
-    public val weatherWeekListLD: LiveData<List<WeatherWeek>?> = weatherWeekListMLD
-
+//***
+//    private val weatherWeekListMLD = MutableLiveData<List<WeatherWeek>?>()
+//    public val weatherWeekListLD: LiveData<List<WeatherWeek>?> = weatherWeekListMLD
+//***
     private val weatherWeekListListMLD = MutableLiveData<List<List<WeatherWeek>>?>()
     public val weatherWeekListListLD: LiveData<List<List<WeatherWeek>>?> = weatherWeekListListMLD
 
@@ -73,6 +73,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     }
 
     fun addCity(userInput: String) {
+        //todo use dedicated API for city search
         newCityName = userInput.capitalizeEveryWord()
         cityObservable.onNext(newCityName)
     }
@@ -87,16 +88,22 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     fun openRxChannels() {
         if (areRxChannelsOpen.not()) {
-            checkAndAddCity()
-            fetchWeatherToday()
-            fetchWeatherWeek()
+            checkAndAddCityRx()
+            fetchWeatherTodayRx()
+            fetchWeatherWeekRx()
             areRxChannelsOpen = true
         }
     }
 
     /*Rx*/
 
-    private fun checkAndAddCity() {
+    private fun checkAndAddCityRx() {
+
+        //todo:
+        // fix: add function input parameters
+        // separate into more single-duty functions
+        // == make clean functions !!
+
         Log.d(TAG, "checkAndAddCity: Started")
 
         val d = cityFlowable
@@ -142,7 +149,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     /*weather today*/
 
-    private fun fetchWeatherToday() {
+    private fun fetchWeatherTodayRx() {
         Log.d(TAG, "fetchWeatherToday: Started")
 
         weatherRepo.getAllCitiesRx()
@@ -193,13 +200,13 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
     }
 
-    private fun fetchWeatherWeek() {
+    private fun fetchWeatherWeekRx() {
         Log.d(TAG, "fetchWeatherWeek: Started")
 
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
             .map {
-                weatherWeekListMLD.postValue(null)
+//                weatherWeekListMLD.postValue(null)
                 weatherWeekListListMLD.postValue(null)
                 it
             }
@@ -227,12 +234,12 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     t.forEach {
                         weatherRepo.addWeatherWeek(it)
                     }
-
-                    val weatherValue = weatherWeekListMLD.value?.toMutableList()
-                        ?: emptyList<WeatherWeek>().toMutableList()
-                    weatherValue.addAll(t)
-                    weatherWeekListMLD.postValue(weatherValue)
-
+//***
+//                    val weatherValue = weatherWeekListMLD.value?.toMutableList()
+//                        ?: emptyList<WeatherWeek>().toMutableList()
+//                    weatherValue.addAll(t)
+//                    weatherWeekListMLD.postValue(weatherValue)
+//***
                     val weatherListValue = weatherWeekListListMLD.value?.toMutableList()
                         ?: emptyList<List<WeatherWeek>>().toMutableList()
                     weatherListValue.add(t)
