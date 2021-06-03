@@ -40,11 +40,11 @@ class InfoFirstStartFragment : BaseDialogFragment<FragmentInfoFirstStartBinding>
             |1. Shows current weather situation for your cities
             |2. Shows weather forecast for the following 7 days 
             |3. Press on each weather status for more details
+            |4. View weather data on the map
             |
             |Future features:
             |1. Weather conditions for current location
-            |2. Weather statuses on the map
-            |3. ...
+            |2. ...
             |
             |
             |************************

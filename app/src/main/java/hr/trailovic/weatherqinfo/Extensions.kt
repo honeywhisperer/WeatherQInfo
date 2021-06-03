@@ -8,10 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import hr.trailovic.weatherqinfo.model.WeatherToday
-import hr.trailovic.weatherqinfo.model.WeatherTodayResponse
-import hr.trailovic.weatherqinfo.model.WeatherWeek
-import hr.trailovic.weatherqinfo.model.WeatherWeekResponse
+import hr.trailovic.weatherqinfo.model.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -185,9 +182,9 @@ fun convertWeatherTodayApiResponse(
     weatherTodayResponse: WeatherTodayResponse
 ): WeatherToday =
     WeatherToday(
-        weatherTodayResponse.cod,
+//        weatherTodayResponse.cod,
         cityName,
-        weatherTodayResponse.sys.country,
+//        weatherTodayResponse.sys.country,
         (weatherTodayResponse.sys.sunrise + weatherTodayResponse.timezone) * 1000,
         (weatherTodayResponse.sys.sunset + weatherTodayResponse.timezone) * 1000,
         weatherTodayResponse.main.temp,
@@ -227,6 +224,16 @@ fun convertWeatherWeekApiResponse(
     return listOfConverted
 }
 
+fun convertCityResponse(cityResponse: CityResponse): City?{
+    var newCity: City? = null
+    with(cityResponse){
+        if(name!=null && country!=null && lat!=null && lon!=null){
+            newCity = City(name, country, state, lon, lat)
+        }
+    }
+    return newCity
+}
+
 /*Weather API response*/
 
 fun String.toWeatherIconUrl() =
@@ -251,5 +258,4 @@ fun DialogFragment.setWidthPercent(percentage: Int) {
 
 fun someTest(){
     val x = IntArray(10){it*it}
-
 }

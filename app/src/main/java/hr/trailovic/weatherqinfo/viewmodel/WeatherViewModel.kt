@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.trailovic.weatherqinfo.capitalizeEveryWord
+import hr.trailovic.weatherqinfo.convertCityResponse
 import hr.trailovic.weatherqinfo.convertWeatherTodayApiResponse
 import hr.trailovic.weatherqinfo.convertWeatherWeekApiResponse
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.repo.WeatherRepository
 import io.reactivex.BackpressureStrategy
+import io.reactivex.Observable
+import io.reactivex.ObservableTransformer
 import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -20,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.launch
+import org.reactivestreams.Publisher
 import javax.inject.Inject
 
 private const val TAG = "wVM:::"
@@ -40,7 +44,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private val weatherTodayListMLD = MutableLiveData<List<WeatherToday>?>()
     public val weatherTodayListLD: LiveData<List<WeatherToday>?> = weatherTodayListMLD
-//***
+
+    //***
 //    private val weatherWeekListMLD = MutableLiveData<List<WeatherWeek>?>()
 //    public val weatherWeekListLD: LiveData<List<WeatherWeek>?> = weatherWeekListMLD
 //***
@@ -52,6 +57,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     private val cityFlowable =
         cityObservable.toSerialized()
             .toFlowable(BackpressureStrategy.BUFFER)
+
+    private val cityResponseListMLD = MutableLiveData<List<CityResponse>>()
+    val cityResponseListLD: LiveData<List<CityResponse>> = cityResponseListMLD
 
     /*city*/
 
@@ -73,7 +81,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     }
 
     fun addCity(userInput: String) {
-        //todo use dedicated API for city search
+        //todo: use dedicated API for city search
         newCityName = userInput.capitalizeEveryWord()
         cityObservable.onNext(newCityName)
     }
@@ -88,7 +96,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     fun openRxChannels() {
         if (areRxChannelsOpen.not()) {
-            checkAndAddCityRx()
+//            checkAndAddCityRx()
             fetchWeatherTodayRx()
             fetchWeatherWeekRx()
             areRxChannelsOpen = true
@@ -127,10 +135,10 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                                 val validCityName = newCityName.substringBefore(",")
                                 weatherRepo.addCity(
                                     City(
-                                        validCityName,
-                                        country,
-                                        resp.lon,
-                                        resp.lat
+                                        name = validCityName,
+                                        country = country,
+                                        lon = resp.lon,
+                                        lat = resp.lat
                                     )
                                 )
                             } else {
@@ -146,6 +154,49 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
         disposables.add(d)
     }
+
+    /* <<< Add City */
+    fun checkCityRx(cityName: String) {
+        Observable.just(cityName)
+            .subscribeOn(Schedulers.io())
+            .flatMap {
+                weatherRepo.getCitiesListRx(it)
+            }
+            .observeOn(Schedulers.io())
+            .subscribe(object : Observer<List<CityResponse>?> {
+                override fun onSubscribe(d: Disposable) {
+                    Log.d(TAG, "onSubscribe: checkCityRx")
+                    disposables.add(d)
+                }
+
+                override fun onNext(t: List<CityResponse>) {
+                    cityResponseListMLD.postValue(t)
+                }
+
+                override fun onError(e: Throwable) {
+                    messageMLD.postValue("Error requesting data for $cityName")
+                    Log.e(TAG, "onError: ", e)
+                }
+
+                override fun onComplete() {
+                    Log.d(TAG, "onComplete: checkCityRx")
+                }
+            })
+    }
+
+    fun saveCity(cityResponse: CityResponse){
+        val city = convertCityResponse(cityResponse)
+        city?.let {
+            viewModelScope.launch {
+                weatherRepo.addCitySuspended(it)
+            }
+        }
+    }
+
+    fun cleanCitySearchData(){
+        cityResponseListMLD.postValue(emptyList())
+    }
+    /* Add City >>> */
 
     /*weather today*/
 
@@ -169,7 +220,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         loadingMLD.postValue(true)//***
                     }
                     .map {
-                        convertWeatherTodayApiResponse(city.name, it)
+                        convertWeatherTodayApiResponse(city.fullName, it)
                     }
             }
             .subscribe(object : Observer<WeatherToday> {

@@ -11,7 +11,10 @@ interface CityDao {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addCity(city: City) //Rx
+    fun addCityRx(city: City) //Rx
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addCity(city: City)
 
     @Delete
     suspend fun removeCity(city: City)

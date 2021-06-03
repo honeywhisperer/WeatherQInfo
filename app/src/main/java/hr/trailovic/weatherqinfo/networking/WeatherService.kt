@@ -1,6 +1,7 @@
 package hr.trailovic.weatherqinfo.networking
 
 import hr.trailovic.weatherqinfo.BuildConfig
+import hr.trailovic.weatherqinfo.model.CityResponse
 import hr.trailovic.weatherqinfo.model.WeatherTodayResponse
 import hr.trailovic.weatherqinfo.model.WeatherWeekResponse
 import io.reactivex.Observable
@@ -11,14 +12,14 @@ interface WeatherService {
 
     // Rx
 
-    @GET("weather/")
+    @GET("data/2.5/weather/")
     fun getCurrentWeatherForTodayRx(
 
         @Query("q")
         city: String,
 
         @Query("appid")
-        appid: String = BuildConfig.API_KEY,
+        appid: String/* = BuildConfig.API_KEY*/,
 
         @Query("units")
         units: String = "metric"
@@ -26,7 +27,7 @@ interface WeatherService {
     ): Observable<WeatherTodayResponse>
 
 
-    @GET("onecall")
+    @GET("data/2.5/onecall")
     fun getWeatherForWeekRx(
 
         @Query("lon")
@@ -39,10 +40,24 @@ interface WeatherService {
         exclude: String = "current,minutely,hourly,alerts",
 
         @Query("appid")
-        appid: String = BuildConfig.API_KEY,
+        appid: String/* = BuildConfig.API_KEY*/,
 
         @Query("units")
         units: String = "metric"
 
     ): Observable<WeatherWeekResponse>
+
+
+    @GET("geo/1.0/direct")
+    fun getListOfCitiesRx(
+
+        @Query("q")
+        city:String,
+
+        @Query("limit")
+        limit:Int = 50,
+
+        @Query("appid")
+        appid: String/* = BuildConfig.API_KEY*/,
+    ): Observable<List<CityResponse>?>
 }

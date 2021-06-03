@@ -10,10 +10,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity
 data class WeatherToday(
-    @ColumnInfo val cod: Int,
+//    @ColumnInfo val cod: Int,
 
     @ColumnInfo val city: String,
-    @ColumnInfo val country: String,
+//    @ColumnInfo val country: String,
 
 
     @ColumnInfo val sunrise: Long,
@@ -31,7 +31,7 @@ data class WeatherToday(
     @ColumnInfo val description: String,
     @ColumnInfo val icon: String,
 
-    @PrimaryKey val cityFullName: String = "$city, $country",
+    @PrimaryKey val cityFullName: String = city,
 ) : Parcelable
 
 // --- API response

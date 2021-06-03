@@ -20,6 +20,15 @@ class WeatherRepository @Inject constructor(
     private val weatherWeekDao = appDatabase.weatherWeekDao()
     private val cityDao = appDatabase.cityDao()
 
+    /* <<< City List */
+
+    fun getCitiesListRx(cityName: String): Observable<List<CityResponse>?> {
+        return apiService.getListOfCitiesRx(cityName, appid = prefsHelper.readApiKey())
+    }
+
+    /* City List >>> */
+
+
     /*city - Room*/
 
     fun getAllCitiesRx(): Observable<List<City>> {
@@ -39,6 +48,10 @@ class WeatherRepository @Inject constructor(
     }
 
     fun addCity(city: City) {
+        cityDao.addCityRx(city)
+    }
+
+    suspend fun addCitySuspended(city: City){
         cityDao.addCity(city)
     }
 

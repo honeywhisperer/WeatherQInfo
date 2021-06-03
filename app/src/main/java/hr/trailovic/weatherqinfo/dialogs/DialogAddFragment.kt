@@ -3,10 +3,12 @@ package hr.trailovic.weatherqinfo.dialogs
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogAddBinding
 import hr.trailovic.weatherqinfo.fixUserInput
+import hr.trailovic.weatherqinfo.model.CityResponse
 import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 
@@ -14,6 +16,15 @@ import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
 
     private val viewModel: WeatherViewModel by activityViewModels()
+
+    private val dialogAddAdapter = DialogAddAdapter(object: OnCityResponseItemInteraction{
+        override fun addCityToList(cityResponse: CityResponse) {
+            //todo: call VM function which receives CityResponse, converts it to City and stores it
+            viewModel.saveCity(cityResponse)
+            viewModel.cleanCitySearchData()
+            dialog?.dismiss()
+        }
+    })
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -25,6 +36,28 @@ class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
     override fun setup() {
         setFullScreen()
         setListeners()
+        setCityResponseRV()
+        bind()
+    }
+
+    override fun cleanFragment() {
+        viewModel.cleanCitySearchData()
+        super.cleanFragment()
+    }
+
+    private fun bind() {
+        //todo: subscribe to LiveData in VM and store results in RecyclerView
+        viewModel.cityResponseListLD.observe(viewLifecycleOwner){
+            dialogAddAdapter.setItems(it)
+        }
+    }
+
+    private fun setCityResponseRV() {
+        with(binding.rvCityResponseList){
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = dialogAddAdapter
+        }
+//        dialogAddAdapter.setItems(emptyList())
     }
 
     private fun setListeners() {
@@ -33,8 +66,9 @@ class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
             if (userInput.isBlank()) {
                 binding.etCityName.error = "City name is required"
             } else {
-                viewModel.addCity(userInput.fixUserInput())
-                dialog?.dismiss()
+//                viewModel.addCity(userInput.fixUserInput())
+//                dialog?.dismiss()
+                viewModel.checkCityRx(userInput)
             }
         }
     }
