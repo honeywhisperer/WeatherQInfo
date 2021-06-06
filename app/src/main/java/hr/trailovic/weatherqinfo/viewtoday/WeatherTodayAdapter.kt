@@ -50,7 +50,7 @@ class WeatherTodayAdapter @Inject constructor(private val glideRequestManager: R
 
         fun bind(weatherToday: WeatherToday) {
             with(itemWeatherTodayBinding) {
-                tvLocation.text = weatherToday.cityFullName
+                tvLocation.text = weatherToday.locationFullName
                 tvDescription.text = weatherToday.description
                 tvTemperature.text = weatherToday.temp.oneDecimal().temperature()
                 tvTemperatureFeelsLike.text =

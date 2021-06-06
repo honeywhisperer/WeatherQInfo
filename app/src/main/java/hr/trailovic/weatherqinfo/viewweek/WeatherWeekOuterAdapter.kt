@@ -49,7 +49,7 @@ class WeatherWeekOuterAdapter @Inject constructor(
 
         fun bind(oneLocationWeatherWeek: List<WeatherWeek>) {
             itemWeatherWeekOuterBinding.tvLocation.text =
-                oneLocationWeatherWeek[0].location
+                oneLocationWeatherWeek[0].locationFullName
 
             val innerAdapter = WeatherWeekInnerAdapter(glideRequestManager)
             innerAdapter.listener = object : OnWeatherWeekItemInteraction {

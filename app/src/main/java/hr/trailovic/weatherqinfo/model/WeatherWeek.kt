@@ -11,7 +11,7 @@ import java.util.*
 @Parcelize
 @Entity
 data class WeatherWeek(
-    @ColumnInfo val location: String,
+    @ColumnInfo val locationFullName: String,
     @ColumnInfo val sunrise: Long,
     @ColumnInfo val sunset: Long,
     @ColumnInfo val tempDay: Double,
@@ -24,7 +24,8 @@ data class WeatherWeek(
     @ColumnInfo val windSpeed: Double,
     @ColumnInfo val rain: Double,
     @ColumnInfo val uvi: Double,
-    @PrimaryKey val id: String = UUID.randomUUID().toString()
+    @ColumnInfo val timeTag: Long = System.currentTimeMillis(),
+    @PrimaryKey val id: String = locationFullName + sunrise.toString()
 ) : Parcelable
 
 // --- API response

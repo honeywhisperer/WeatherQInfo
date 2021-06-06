@@ -13,10 +13,16 @@ interface WeatherService {
     // Rx
 
     @GET("data/2.5/weather/")
-    fun getCurrentWeatherForTodayRx(
+    fun fetchWeatherTodayForCityRx(
 
-        @Query("q")
-        city: String,
+//        @Query("q")
+//        city: String,
+
+        @Query("lon")
+        lon: Double,
+
+        @Query("lat")
+        lat: Double,
 
         @Query("appid")
         appid: String/* = BuildConfig.API_KEY*/,
@@ -28,7 +34,7 @@ interface WeatherService {
 
 
     @GET("data/2.5/onecall")
-    fun getWeatherForWeekRx(
+    fun fetchWeatherWeekForCityRx(
 
         @Query("lon")
         lon: Double,
@@ -49,7 +55,7 @@ interface WeatherService {
 
 
     @GET("geo/1.0/direct")
-    fun getListOfCitiesRx(
+    fun getCitiesListRx(
 
         @Query("q")
         city:String,

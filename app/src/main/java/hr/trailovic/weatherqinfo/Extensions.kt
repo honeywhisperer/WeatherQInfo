@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
+import android.os.SystemClock
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -103,6 +104,16 @@ fun Long.toTimeString(timezoneOffset: Int = 0): String {
     return format.format(date)
 }
 
+fun Long.isItOlderThanOneHour(): Boolean {
+    val now = System.currentTimeMillis()
+    return (now - this) > (60 * 60 * 1000)
+}
+
+fun Long.isItOlderThan12Hours(): Boolean {
+    val now = System.currentTimeMillis()
+    return (now - this) > (12 * 60 * 60 * 1000)
+}
+
 /*String formatting*/
 
 fun Double.oneDecimal(): String {
@@ -176,7 +187,7 @@ fun Double.generateFeelsLikeTemperatureText(realTemperature: Double): String {
 }
 
 /*Converters*/
-
+//System.currentTimeMillis()
 fun convertWeatherTodayApiResponse(
     cityName: String,
     weatherTodayResponse: WeatherTodayResponse
@@ -224,10 +235,10 @@ fun convertWeatherWeekApiResponse(
     return listOfConverted
 }
 
-fun convertCityResponse(cityResponse: CityResponse): City?{
+fun convertCityResponse(cityResponse: CityResponse): City? {
     var newCity: City? = null
-    with(cityResponse){
-        if(name!=null && country!=null && lat!=null && lon!=null){
+    with(cityResponse) {
+        if (name != null && country != null && lat != null && lon != null) {
             newCity = City(name, country, state, lon, lat)
         }
     }
@@ -256,6 +267,6 @@ fun DialogFragment.setWidthPercent(percentage: Int) {
     dialog?.window?.setLayout(percentWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 }
 
-fun someTest(){
-    val x = IntArray(10){it*it}
+fun someTest() {
+    val x = IntArray(10) { it * it }
 }

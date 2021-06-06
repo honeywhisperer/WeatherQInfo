@@ -11,13 +11,13 @@ interface CityDao {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addCityRx(city: City) //Rx
+    fun addCity(city: City) //Rx
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addCity(city: City)
+    suspend fun addCitySuspend(city: City)
 
     @Delete
-    suspend fun removeCity(city: City)
+    suspend fun removeCitySuspend(city: City)
 
     @Query("DELETE FROM city WHERE upper(name) LIKE upper(:cityName)")
     suspend fun removeCityByName(cityName: String)
@@ -26,7 +26,7 @@ interface CityDao {
     fun updateCity(city: City) //Rx
 
     @Query("DELETE FROM city")
-    suspend fun removeAll()
+    suspend fun removeAllCitiesSuspend()
 
     // - GET
 
@@ -44,5 +44,8 @@ interface CityDao {
 
     @Query("SELECT * FROM city WHERE upper(name) LIKE upper(:cityName)")
     fun getCityByName(cityName: String): City?
+
+    @Query("SELECT * FROM city WHERE lat = :lat AND lon = :lon")
+    suspend fun getCityByCoordinatesSuspend(lat: Double, lon: Double): City?
 
 }

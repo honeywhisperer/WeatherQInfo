@@ -14,7 +14,7 @@ data class City(
     @ColumnInfo val lon: Double,
     @ColumnInfo val lat: Double,
     @PrimaryKey val fullName: String = state?.let { "$name, $it, $country" } ?: "$name, $country",
-    @ColumnInfo val id: String = UUID.randomUUID().toString()
+    @ColumnInfo val id: String = "$fullName $lon $lat"
 )
 
 data class CityResponse(

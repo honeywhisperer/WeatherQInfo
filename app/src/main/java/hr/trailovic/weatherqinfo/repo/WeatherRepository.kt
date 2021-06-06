@@ -1,6 +1,5 @@
 package hr.trailovic.weatherqinfo.repo
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import hr.trailovic.weatherqinfo.database.AppDatabase
 import hr.trailovic.weatherqinfo.model.*
@@ -20,17 +19,14 @@ class WeatherRepository @Inject constructor(
     private val weatherWeekDao = appDatabase.weatherWeekDao()
     private val cityDao = appDatabase.cityDao()
 
-    /* <<< City List */
-
+    /* <<< City API */
     fun getCitiesListRx(cityName: String): Observable<List<CityResponse>?> {
-        return apiService.getListOfCitiesRx(cityName, appid = prefsHelper.readApiKey())
+        return apiService.getCitiesListRx(cityName, appid = prefsHelper.readApiKey())
     }
+    /* City API >>> */
 
-    /* City List >>> */
 
-
-    /*city - Room*/
-
+    /* <<< City Room */
     fun getAllCitiesRx(): Observable<List<City>> {
         return cityDao.getAllCitiesRx()
     }
@@ -39,89 +35,94 @@ class WeatherRepository @Inject constructor(
         return cityDao.getAllCitiesLD()
     }
 
-    suspend fun removeCity(city: City) {
-        cityDao.removeCity(city)
+    suspend fun removeCitySuspend(city: City) {
+        cityDao.removeCitySuspend(city)
     }
 
-    suspend fun removeAllCities() {
-        cityDao.removeAll()
+    suspend fun removeAllCitiesSuspend() {
+        cityDao.removeAllCitiesSuspend()
     }
 
     fun addCity(city: City) {
-        cityDao.addCityRx(city)
-    }
-
-    suspend fun addCitySuspended(city: City){
         cityDao.addCity(city)
     }
 
-    /*weather today - Room*/
+    suspend fun addCitySuspend(city: City) {
+        cityDao.addCitySuspend(city)
+    }
 
+    suspend fun getCityByCoordinatesSuspend(lat: Double, lon: Double): City? {
+        return cityDao.getCityByCoordinatesSuspend(lat, lon)
+    }
+
+    suspend fun getAllCitiesList(): List<City> {
+        return cityDao.getAllCitiesList()
+    }
+    /* City Room >>> */
+
+
+    /* <<< Weather Today Room */
     fun getAllWeatherTodayRx(): Observable<List<WeatherToday>> {
         return weatherTodayDao.getAllWeatherTodayRx()
     }
 
-    suspend fun removeWeatherToday(weatherToday: WeatherToday) {
-        weatherTodayDao.removeWeatherToday(weatherToday)
+    suspend fun removeWeatherTodaySuspend(weatherToday: WeatherToday) {
+        weatherTodayDao.removeWeatherTodaySuspend(weatherToday)
     }
 
-    suspend fun removeWeatherTodayByCityName(cityName: String){
-        weatherTodayDao.removeWeatherTodayByCityName(cityName)
+    suspend fun removeWeatherTodayByCityNameSuspend(cityName: String) {
+        weatherTodayDao.removeWeatherTodayByCityNameSuspend(cityName)
     }
 
-    suspend fun removeAllWeatherToday() {
-        weatherTodayDao.removeAllWeatherToday()
+    suspend fun removeAllWeatherTodaySuspend() {
+        weatherTodayDao.removeAllWeatherTodaySuspend()
     }
 
-    fun addWeatherToday(weatherToday: WeatherToday) {
-        weatherTodayDao.addWeatherToday(weatherToday)
+    suspend fun addWeatherTodaySuspend(weatherToday: WeatherToday) {
+        weatherTodayDao.addWeatherTodaySuspend(weatherToday)
     }
 
-    /*weather today - Api*/
-
-    fun fetchWeatherTodayForCity(city: City): Observable<WeatherTodayResponse> {
-        return apiService.getCurrentWeatherForTodayRx(city.fullName, prefsHelper.readApiKey())
+    fun getWeatherTodayForCity(city: City): WeatherToday? {
+        return weatherTodayDao.getWeatherTodayForCity(city.fullName)
     }
+    /* Weather Today Room >>> */
 
-//    fun fetchCoordinatesForCity(cityName: String): Observable<WeatherTodayResponse> {
-//        return apiService.getCurrentWeatherForTodayRx(cityName)
-//    }
-
-    fun fetchCoordinatesForCity(cityName: String): WeatherTodayResponse? {
-        var response: WeatherTodayResponse?
-        try {
-            Log.d(TAG, "fetchCoordinatesForCity: try: we are here")
-            response = apiService.getCurrentWeatherForTodayRx(cityName, prefsHelper.readApiKey()).blockingFirst()
-        } catch (e: Throwable) {
-            Log.e(TAG, "fetchCoordinatesForCity: catch: we are here", e)
-            response = null
-        } finally {
-            Log.d(TAG, "fetchCoordinatesForCity: finally: we are here")
-        }
-        return response
+    /* <<< Weather Today Api */
+    fun fetchWeatherTodayForCityRx(city: City): Observable<WeatherTodayResponse> {
+        return apiService.fetchWeatherTodayForCityRx(city.lon, city.lat, prefsHelper.readApiKey())
     }
+    /* Weather Today Api >>> */
 
-    /*weather week - Room*/
 
+    /* <<< Weather Week Room */
     fun getAllWeatherWeekRx(): Observable<List<WeatherWeek>> {
         return weatherWeekDao.getAllWeatherWeekRx()
     }
 
-    suspend fun removeAllWeatherWeek() {
-        weatherWeekDao.removeAllWeatherWeek()
+    suspend fun removeAllWeatherWeekSuspend() {
+        weatherWeekDao.removeAllWeatherWeekSuspend()
     }
 
-    suspend fun removeWeatherWeekByCityName(cityName: String){
-        weatherWeekDao.removeWeatherWeekByCityName(cityName)
+    suspend fun removeWeatherWeekByCityNameSuspend(cityName: String) {
+        weatherWeekDao.removeWeatherWeekByCityNameSuspend(cityName)
     }
 
-    fun addWeatherWeek(weatherWeek: WeatherWeek) {
-        weatherWeekDao.addWeatherWeek(weatherWeek)
+    suspend fun addWeatherWeekSuspend(weatherWeek: WeatherWeek) {
+        weatherWeekDao.addWeatherWeekSuspend(weatherWeek)
     }
 
-    /*weather week - Api*/
-
-    fun fetchWeatherWeekForCity(city: City): Observable<WeatherWeekResponse> {
-        return apiService.getWeatherForWeekRx(city.lon, city.lat, appid = prefsHelper.readApiKey())
+    fun getWeatherWeekForCity(city: City): List<WeatherWeek>? {
+        return weatherWeekDao.getWeatherWeekForCity(city.fullName)
     }
+    /* Weather Week Room >>> */
+
+    /* <<< Weather Week API */
+    fun fetchWeatherWeekForCityRx(city: City): Observable<WeatherWeekResponse> {
+        return apiService.fetchWeatherWeekForCityRx(
+            city.lon,
+            city.lat,
+            appid = prefsHelper.readApiKey()
+        )
+    }
+    /* Weather Week API >>> */
 }

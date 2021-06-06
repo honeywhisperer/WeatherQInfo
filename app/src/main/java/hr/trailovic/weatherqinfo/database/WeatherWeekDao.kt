@@ -11,17 +11,20 @@ import io.reactivex.Observable
 interface WeatherWeekDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addWeatherWeek(weatherWeek: WeatherWeek)
+    suspend fun addWeatherWeekSuspend(weatherWeek: WeatherWeek)
 
     @Query("DELETE FROM weatherweek")
-    suspend fun removeAllWeatherWeek()
+    suspend fun removeAllWeatherWeekSuspend()
 
-    @Query("DELETE FROM weatherweek WHERE upper(location) LIKE upper(:cityName)")
-    suspend fun removeWeatherWeekByCityName(cityName: String)
+    @Query("DELETE FROM weatherweek WHERE upper(locationFullName) LIKE upper(:cityName)")
+    suspend fun removeWeatherWeekByCityNameSuspend(cityName: String)
 
     // GET
 
     @Query("SELECT * FROM weatherweek")
     fun getAllWeatherWeekRx(): Observable<List<WeatherWeek>>
+
+    @Query("SELECT * FROM weatherweek WHERE upper(locationFullName) LIKE upper(:cityName)")
+    fun getWeatherWeekForCity(cityName: String): List<WeatherWeek>?
 
 }

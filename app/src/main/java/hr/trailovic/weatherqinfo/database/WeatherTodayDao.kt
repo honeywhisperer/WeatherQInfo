@@ -10,21 +10,24 @@ interface WeatherTodayDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addWeatherToday(weatherToday: WeatherToday)
+    suspend fun addWeatherTodaySuspend(weatherToday: WeatherToday)
 
     @Delete
-    suspend fun removeWeatherToday(weatherToday: WeatherToday)
+    suspend fun removeWeatherTodaySuspend(weatherToday: WeatherToday)
 
     @Query("DELETE FROM weathertoday")
-    suspend fun removeAllWeatherToday()
+    suspend fun removeAllWeatherTodaySuspend()
 
-    @Query("DELETE FROM weathertoday WHERE upper(city) LIKE upper(:cityName)")
-    suspend fun removeWeatherTodayByCityName(cityName: String)
+    @Query("DELETE FROM weathertoday WHERE upper(locationFullName) LIKE upper(:cityName)")
+    suspend fun removeWeatherTodayByCityNameSuspend(cityName: String)
 
     // GET
 
     @Query("SELECT * FROM weathertoday")
     fun getAllWeatherTodayRx(): Observable<List<WeatherToday>>
+
+    @Query("SELECT * FROM weathertoday WHERE upper(locationFullName) LIKE upper(:cityFullName)")
+    fun getWeatherTodayForCity(cityFullName: String): WeatherToday?
 
 
     @Query("SELECT * FROM weathertoday")

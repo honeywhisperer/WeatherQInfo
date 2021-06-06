@@ -6,24 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.trailovic.weatherqinfo.capitalizeEveryWord
-import hr.trailovic.weatherqinfo.convertCityResponse
-import hr.trailovic.weatherqinfo.convertWeatherTodayApiResponse
-import hr.trailovic.weatherqinfo.convertWeatherWeekApiResponse
+import hr.trailovic.weatherqinfo.*
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.repo.WeatherRepository
-import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
 import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import kotlinx.coroutines.launch
-import org.reactivestreams.Publisher
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 private const val TAG = "wVM:::"
@@ -36,27 +30,19 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private var areRxChannelsOpen = false
 
+    private val citiesCrossReference = mutableMapOf<Coord, String>() // coord:fullName
+
     private val messageMLD = MutableLiveData<String>()
-    public val messageLD: LiveData<String> = messageMLD
+    val messageLD: LiveData<String> = messageMLD
 
     private val loadingMLD = MutableLiveData<Boolean>(false)
-    public val loadingLD: LiveData<Boolean> = loadingMLD
+    val loadingLD: LiveData<Boolean> = loadingMLD
 
     private val weatherTodayListMLD = MutableLiveData<List<WeatherToday>?>()
-    public val weatherTodayListLD: LiveData<List<WeatherToday>?> = weatherTodayListMLD
+    val weatherTodayListLD: LiveData<List<WeatherToday>?> = weatherTodayListMLD
 
-    //***
-//    private val weatherWeekListMLD = MutableLiveData<List<WeatherWeek>?>()
-//    public val weatherWeekListLD: LiveData<List<WeatherWeek>?> = weatherWeekListMLD
-//***
     private val weatherWeekListListMLD = MutableLiveData<List<List<WeatherWeek>>?>()
-    public val weatherWeekListListLD: LiveData<List<List<WeatherWeek>>?> = weatherWeekListListMLD
-
-    private var newCityName = ""
-    private val cityObservable: Subject<String> = PublishSubject.create()
-    private val cityFlowable =
-        cityObservable.toSerialized()
-            .toFlowable(BackpressureStrategy.BUFFER)
+    val weatherWeekListListLD: LiveData<List<List<WeatherWeek>>?> = weatherWeekListListMLD
 
     private val cityResponseListMLD = MutableLiveData<List<CityResponse>>()
     val cityResponseListLD: LiveData<List<CityResponse>> = cityResponseListMLD
@@ -64,26 +50,35 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     /*city*/
 
     fun removeCityData(city: City) {
-        viewModelScope.launch {
-            weatherRepo.removeCity(city)
-            /*Weather Today and Weather week data will be re-fetched
-             after city DB status is changed*/
+        val lockA = Mutex()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            lockA.withLock {
+                weatherRepo.removeWeatherWeekByCityNameSuspend(city.fullName)
+            }
+            lockA.withLock {
+                weatherRepo.removeWeatherTodayByCityNameSuspend(city.fullName)
+            }
+            lockA.withLock {
+                weatherRepo.removeCitySuspend(city)
+            }
         }
     }
 
     fun removeAllData() {
+        val lockA = Mutex()
         viewModelScope.launch {
-            weatherRepo.removeAllCities()
-            weatherRepo.removeAllWeatherToday()
-            weatherRepo.removeAllWeatherWeek()
+            lockA.withLock {
+                weatherRepo.removeAllWeatherWeekSuspend()
+            }
+            lockA.withLock {
+                weatherRepo.removeAllWeatherTodaySuspend()
+            }
+            lockA.withLock {
+                weatherRepo.removeAllCitiesSuspend()
+            }
             Log.d(TAG, "removeAllData: ${Thread.currentThread().name}")
         }
-    }
-
-    fun addCity(userInput: String) {
-        //todo: use dedicated API for city search
-        newCityName = userInput.capitalizeEveryWord()
-        cityObservable.onNext(newCityName)
     }
 
     fun dismissErrorMessage() {
@@ -96,62 +91,32 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     fun openRxChannels() {
         if (areRxChannelsOpen.not()) {
-//            checkAndAddCityRx()
-            fetchWeatherTodayRx()
-            fetchWeatherWeekRx()
+            checkWeatherTodayRX()
+            loadWeatherTodayRx()
+
+            checkWeatherWeekRx()
+            loadWeatherWeekRx()
+
+            keepCrossReferencesUpdated()
+
             areRxChannelsOpen = true
         }
     }
 
     /*Rx*/
 
-    private fun checkAndAddCityRx() {
 
-        //todo:
-        // fix: add function input parameters
-        // separate into more single-duty functions
-        // == make clean functions !!
-
-        Log.d(TAG, "checkAndAddCity: Started")
-
-        val d = cityFlowable
+    private fun keepCrossReferencesUpdated() {
+        val d = weatherRepo.getAllCitiesRx()
+            .subscribeOn(Schedulers.io())
+            .concatMapIterable { it }
             .observeOn(Schedulers.io())
-            .map {
-                Log.d(TAG, "checkAndAddCity: map: |${it}|")
-                Log.d(TAG, "checkAndAddCity: Map running on ${Thread.currentThread().name}")
-                it
-            }
-            .map {
-                Log.d(TAG, "checkAndAddCity: FlatMap running on ${Thread.currentThread().name}")
-                WeatherTodayResponseWrapper(weatherRepo.fetchCoordinatesForCity(it))
-            }
-            .subscribe(object : Consumer<WeatherTodayResponseWrapper> {
-                override fun accept(t: WeatherTodayResponseWrapper?) {
-                    t?.let { weatherTodayResponseWrapper ->
-                        weatherTodayResponseWrapper.weatherTodayResponse?.let { weatherTodayResponse ->
-                            if (weatherTodayResponse.cod == 200) {
-                                val resp = weatherTodayResponse.coord
-                                val country = weatherTodayResponse.sys.country
-                                val validCityName = newCityName.substringBefore(",")
-                                weatherRepo.addCity(
-                                    City(
-                                        name = validCityName,
-                                        country = country,
-                                        lon = resp.lon,
-                                        lat = resp.lat
-                                    )
-                                )
-                            } else {
-                                messageMLD.postValue("Error while fetching data $newCityName")
-                                Log.d(TAG, "Error while fetching data $newCityName (cod != 200)")
-                            }
-                        }
-                    } ?: run {
-                        messageMLD.postValue("Error while fetching data $newCityName")
-                        Log.d(TAG, "Error while fetching data $newCityName (response == null)")
-                    }
+            .subscribeBy(
+                onNext = {
+                    val coord = Coord(it.lon, it.lat)
+                    citiesCrossReference[coord] = it.fullName
                 }
-            })
+            )
         disposables.add(d)
     }
 
@@ -184,132 +149,195 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
     }
 
-    fun saveCity(cityResponse: CityResponse){
+    fun saveCity(cityResponse: CityResponse) {
         val city = convertCityResponse(cityResponse)
         city?.let {
             viewModelScope.launch {
-                weatherRepo.addCitySuspended(it)
+                weatherRepo.addCitySuspend(it)
             }
         }
     }
 
-    fun cleanCitySearchData(){
+    fun cleanCitySearchData() {
         cityResponseListMLD.postValue(emptyList())
     }
     /* Add City >>> */
 
-    /*weather today*/
+    /* <<< Update Weather Today DB and LiveData */
+    private val weatherTodayNeedsUpdate = mutableMapOf<City, Boolean>()
 
-    private fun fetchWeatherTodayRx() {
-        Log.d(TAG, "fetchWeatherToday: Started")
-
+    private fun checkWeatherTodayRX() {
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
-            .map {
-                weatherTodayListMLD.postValue(null)
-                it
+            .flatMap { cityList ->
+                var weatherTodayDB: WeatherToday?
+                cityList.forEach { city ->
+                    weatherTodayDB = weatherRepo.getWeatherTodayForCity(city)
+                    weatherTodayNeedsUpdate[city] =
+                        weatherTodayDB?.timeTag?.isItOlderThanOneHour() ?: true
+                }
+                Observable.just(weatherTodayNeedsUpdate)
             }
-            .concatMapIterable { it ->
-                Log.d(TAG, "fetchWeatherToday: concatMapIterable: ${it.size}")
-                it
+            .map { map ->
+                map.filter { entry ->
+                    entry.value
+                }
+            }
+            .concatMapIterable {
+                it.keys
             }
             .flatMap { city ->
-                weatherRepo.fetchWeatherTodayForCity(city)
-                    .also {
-                        Log.d(TAG, "fetchWeatherToday: ${city.name}")
-                        loadingMLD.postValue(true)//***
-                    }
-                    .map {
-                        convertWeatherTodayApiResponse(city.fullName, it)
-                    }
+                weatherRepo.fetchWeatherTodayForCityRx(city)
             }
-            .subscribe(object : Observer<WeatherToday> {
+            .observeOn(Schedulers.io())
+            .subscribe(object : Observer<WeatherTodayResponse> {
                 override fun onSubscribe(d: Disposable) {
+                    Log.d(TAG, "onSubscribe: checkWeatherTodayRX")
                     disposables.add(d)
-                    Log.d(TAG, "onSubscribe: Today")
                 }
 
-                override fun onNext(t: WeatherToday) {
-                    weatherRepo.addWeatherToday(t)
-                    val weatherValue = weatherTodayListMLD.value?.toMutableList()
-                        ?: emptyList<WeatherToday>().toMutableList()
-                    weatherValue.add(t)
-                    weatherTodayListMLD.postValue(weatherValue)
-                    Log.d(TAG, "onNext: Today ${t.cityFullName}")
-                    loadingMLD.postValue(false)//***
+                override fun onNext(t: WeatherTodayResponse) {
+                    Log.d(TAG, "onNext: checkWeatherTodayRX")
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val locationDescription =
+                            citiesCrossReference[t.coord] ?: "error for ${t.coord}"
+                        val weatherToday =
+                            convertWeatherTodayApiResponse(locationDescription, t)
+                        weatherRepo.addWeatherTodaySuspend(weatherToday)
+                    }
                 }
 
                 override fun onError(e: Throwable) {
-                    messageMLD.postValue("Error fetching/storing weather")
-                    Log.e(TAG, "onError: Today ${e.message}", e)
-                    loadingMLD.postValue(false)//***
+                    Log.e(TAG, "onError: checkWeatherTodayRX", e)
+                    messageMLD.postValue("error checkWeatherTodayRx")
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "onComplete: Today")
+                    Log.d(TAG, "onComplete: checkWeatherTodayRX")
                 }
             })
     }
 
-    private fun fetchWeatherWeekRx() {
-        Log.d(TAG, "fetchWeatherWeek: Started")
+    private fun loadWeatherTodayRx() {
+        weatherRepo.getAllWeatherTodayRx()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe(object : Observer<List<WeatherToday>> {
+                override fun onSubscribe(d: Disposable) {
+                    Log.d(TAG, "onSubscribe: loadWeatherTodayRx")
+                    disposables.add(d)
+                }
 
+                override fun onNext(t: List<WeatherToday>) {
+                    Log.d(TAG, "onNext: loadWeatherTodayRx ${t.size}")
+                    weatherTodayListMLD.postValue(t)
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "onError: loadWeatherTodayRx", e)
+                    messageMLD.postValue("error loadWeatherTodayRx")
+                }
+
+                override fun onComplete() {
+                    Log.d(TAG, "onComplete: loadWeatherTodayRx")
+                }
+            })
+    }
+    /* Update Weather Today DB and LiveData >>> */
+
+    /* <<< Update Weather Week DB and LiveData */
+    private val weatherWeekNeedsUpdate = mutableMapOf<City, Boolean>()
+
+    private fun checkWeatherWeekRx() {
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
-            .map {
-//                weatherWeekListMLD.postValue(null)
-                weatherWeekListListMLD.postValue(null)
-                it
+            .flatMap { cityList ->
+                cityList.forEach { city ->
+                    val weatherWeekDB = weatherRepo.getWeatherWeekForCity(city)
+                    weatherWeekNeedsUpdate[city] =
+                        weatherWeekDB?.firstOrNull()?.timeTag?.isItOlderThan12Hours() ?: true
+                }
+                Observable.just(weatherWeekNeedsUpdate)
             }
-            .concatMapIterable { it ->
-                Log.d(TAG, "fetchWeatherWeek: concatMapIterable: ${it.size}")
-                it
+            .map { map ->
+                map.filter { entry ->
+                    entry.value
+                }
+            }
+            .concatMapIterable {
+                it.keys
             }
             .flatMap { city ->
-                weatherRepo.fetchWeatherWeekForCity(city)
-                    .also {
-                        Log.d(TAG, "fetchWeatherWeek: ${city.name}")
-                        loadingMLD.postValue(true)//***
-                    }
-                    .map {
-                        convertWeatherWeekApiResponse(city.fullName, it)
-                    }
+                weatherRepo.fetchWeatherWeekForCityRx(city)
             }
+            .observeOn(Schedulers.io())
+            .subscribe(object : Observer<WeatherWeekResponse> {
+                override fun onSubscribe(d: Disposable) {
+                    Log.d(TAG, "onSubscribe: checkWeatherWeekRx")
+                    disposables.add(d)
+                }
+
+                override fun onNext(t: WeatherWeekResponse) {
+                    Log.d(TAG, "onNext: checkWeatherWeekRx")
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val coord = Coord(t.lon, t.lat)
+                        val locationDescription =
+                            citiesCrossReference[coord] ?: "error for $coord"
+                        val weatherWeek =
+                            convertWeatherWeekApiResponse(locationDescription, t)
+                        weatherWeek.forEach {
+                            weatherRepo.addWeatherWeekSuspend(it)
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "onError: checkWeatherWeekRx", e)
+                    messageMLD.postValue("error checkWeatherWeekRx")
+                }
+
+                override fun onComplete() {
+                    Log.d(TAG, "onComplete: checkWeatherWeekRx")
+                }
+            })
+    }
+
+    private fun loadWeatherWeekRx() {
+        weatherRepo.getAllWeatherWeekRx()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
             .subscribe(object : Observer<List<WeatherWeek>> {
                 override fun onSubscribe(d: Disposable) {
+                    Log.d(TAG, "onSubscribe: loadWeatherWeekRx")
                     disposables.add(d)
-                    Log.d(TAG, "onSubscribe: Week")
                 }
 
                 override fun onNext(t: List<WeatherWeek>) {
-                    t.forEach {
-                        weatherRepo.addWeatherWeek(it)
+                    Log.d(TAG, "onNext: loadWeatherWeekRx")
+                    //todo
+                    val x = t.groupBy {
+                        it.locationFullName
                     }
-//***
-//                    val weatherValue = weatherWeekListMLD.value?.toMutableList()
-//                        ?: emptyList<WeatherWeek>().toMutableList()
-//                    weatherValue.addAll(t)
-//                    weatherWeekListMLD.postValue(weatherValue)
-//***
-                    val weatherListValue = weatherWeekListListMLD.value?.toMutableList()
-                        ?: emptyList<List<WeatherWeek>>().toMutableList()
-                    weatherListValue.add(t)
-                    weatherWeekListListMLD.postValue(weatherListValue)
-                    Log.d(TAG, "onNext: Week ${t[0].location}")
-                    loadingMLD.postValue(false)//***
+                    val newData = mutableListOf<List<WeatherWeek>>()
+                    x.keys.forEach { key ->
+                        x[key]?.let { list ->
+                            newData.add(list)
+                        }
+                    }
+                    weatherWeekListListMLD.postValue(newData)
                 }
 
                 override fun onError(e: Throwable) {
-                    messageMLD.postValue("Error fetching/storing weather week")
-                    Log.e(TAG, "fetchWeatherWeek: onError: Week ${e.message}", e)
-                    loadingMLD.postValue(false)//***
+                    Log.e(TAG, "onError: loadWeatherWeekRx", e)
+                    messageMLD.postValue("error loadWeatherWeekRx")
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "fetchWeatherWeek: Week onComplete")
+                    Log.d(TAG, "onComplete: loadWeatherWeekRx")
                 }
             })
     }
+    /* Update Weather Week DB and LiveData >>> */
 
     override fun onCleared() {
         disposables.dispose()

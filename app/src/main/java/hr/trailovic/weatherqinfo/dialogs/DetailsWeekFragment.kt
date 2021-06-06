@@ -2,9 +2,7 @@ package hr.trailovic.weatherqinfo.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,7 +49,7 @@ class DetailsWeekFragment : BaseDialogFragment<FragmentDetailsWeekBinding>() {
     private fun setInfo() {
         weatherWeekData?.let { weatherWeek ->
             with(binding) {
-                tvLocation.text = weatherWeek.location
+                tvLocation.text = weatherWeek.locationFullName
                 tvDate.text = weatherWeek.sunrise.toLongDateNameString()
                 ("Sunrise " + weatherWeek.sunrise.toTimeString()).also { tvSunrise.text = it }
                 ("Sunset " + weatherWeek.sunset.toTimeString()).also { tvSunset.text = it }
