@@ -14,6 +14,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_remove_weather"
+        android:icon="@drawable/ic_remove_all"
+        android:title="@string/remove_weather_data"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_cities"
         android:title="@string/show_cities"
         app:showAsAction="never"/>

@@ -81,6 +81,19 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
         }
     }
 
+    fun removeWeatherDataOnly(){
+        val lockA = Mutex()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            lockA.withLock {
+                weatherRepo.removeAllWeatherWeekSuspend()
+            }
+            lockA.withLock {
+                weatherRepo.removeAllWeatherTodaySuspend()
+            }
+        }
+    }
+
     fun dismissErrorMessage() {
         messageMLD.postValue("")
     }

@@ -5,10 +5,12 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import dagger.hilt.android.AndroidEntryPoint
+import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogManageApiKeyBinding
 import hr.trailovic.weatherqinfo.model.SharedPreferencesHelper
 import hr.trailovic.weatherqinfo.setFullScreen
+import hr.trailovic.weatherqinfo.showDialog
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,28 +33,32 @@ class DialogManageApiKeyFragment : BaseDialogFragment<FragmentDialogManageApiKey
     }
 
     private fun setView() {
-        binding.tvCurrentApiKey.text = prefsHelper.readApiKey()
+        val api = prefsHelper.readApiKey()
+        if (api.isNotBlank())
+            binding.ivApiKeyStatus.setImageResource(R.drawable.ic_ok)
+        else
+            binding.ivApiKeyStatus.setImageResource(R.drawable.ic_not_ok)
     }
 
     private fun setListeners() {
-        binding.ibDeleteApiKey.setOnClickListener {
-            prefsHelper.storeApiKey("")
-            binding.tvCurrentApiKey.text = prefsHelper.readApiKey()
-        }
-
-        binding.ibStoreNewApiKey.setOnClickListener {
+        binding.btnStoreApi.setOnClickListener {
             val newApiKey = binding.etNewApiKey.text.toString()
-            if (newApiKey.isNotBlank()){
+            if (newApiKey.isNotBlank()) {
                 prefsHelper.storeApiKey(newApiKey)
                 binding.etNewApiKey.setText("")
-                binding.tvCurrentApiKey.text = prefsHelper.readApiKey()
+                binding.ivApiKeyStatus.setImageResource(R.drawable.ic_ok)
             }
 //            dialog?.dismiss()
         }
-
-        binding.tvCurrentApiKey.setOnLongClickListener {
-            binding.etNewApiKey.setText(binding.tvCurrentApiKey.text)
-            true
+        binding.btnLoadApiKey.setOnClickListener {
+            binding.etNewApiKey.setText(prefsHelper.readApiKey())
+        }
+        binding.btnRemoveApiKey.setOnClickListener {
+            showDialog(requireContext(), "Remove API key?", "Cancel", "Remove") {
+                prefsHelper.storeApiKey("")
+                binding.ivApiKeyStatus.setImageResource(R.drawable.ic_not_ok)
+                binding.etNewApiKey.setText("")
+            }
         }
 
         binding.btnVisitWebPage.setOnClickListener {

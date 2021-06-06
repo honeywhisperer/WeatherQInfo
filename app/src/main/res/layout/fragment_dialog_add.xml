@@ -15,10 +15,10 @@
         android:inputType="textShortMessage" />
 
     <Button
-        android:id="@+id/btnAdd"
+        android:id="@+id/btnSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add" />
+        android:text="@string/search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCityResponseList"

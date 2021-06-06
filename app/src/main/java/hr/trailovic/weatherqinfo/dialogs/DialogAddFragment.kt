@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogAddBinding
-import hr.trailovic.weatherqinfo.fixUserInput
 import hr.trailovic.weatherqinfo.model.CityResponse
 import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
@@ -46,7 +45,6 @@ class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
     }
 
     private fun bind() {
-        //todo: subscribe to LiveData in VM and store results in RecyclerView
         viewModel.cityResponseListLD.observe(viewLifecycleOwner){
             dialogAddAdapter.setItems(it)
         }
@@ -57,17 +55,14 @@ class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = dialogAddAdapter
         }
-//        dialogAddAdapter.setItems(emptyList())
     }
 
     private fun setListeners() {
-        binding.btnAdd.setOnClickListener {
+        binding.btnSearch.setOnClickListener {
             val userInput = binding.etCityName.text.toString()
             if (userInput.isBlank()) {
                 binding.etCityName.error = "City name is required"
             } else {
-//                viewModel.addCity(userInput.fixUserInput())
-//                dialog?.dismiss()
                 viewModel.checkCityRx(userInput)
             }
         }

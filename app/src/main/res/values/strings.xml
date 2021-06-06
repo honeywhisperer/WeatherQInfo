@@ -13,4 +13,9 @@
     <string name="manage_api_key">Manage Api Key</string>
     <string name="enter_your_operweathermap_org_api_key_here">your operweathermap.org API key</string>
     <string name="get_api_key">Get Api key</string>
+    <string name="search">Search</string>
+    <string name="store_api_key">Store Api Key</string>
+    <string name="load_api_key">Load Api Key</string>
+    <string name="remove_api_key">Remove Api Key</string>
+    <string name="remove_weather_data">Remove weather data</string>
 </resources>

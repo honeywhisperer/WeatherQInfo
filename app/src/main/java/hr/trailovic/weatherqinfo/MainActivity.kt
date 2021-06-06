@@ -24,9 +24,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private val viewModel: WeatherViewModel by viewModels()
 
-//    @Inject
-//    lateinit var prefs: SharedPreferences
-
     @Inject
     lateinit var prefsHelper: SharedPreferencesHelper
 
@@ -77,16 +74,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun setInitView() {
         displayFragment(this, WeatherTodayFragment.newInstance())
 
-//        val isThisFirstApplicationStart = prefs.getBoolean(KEY_FIRST_START, true)
         val isThisFirstApplicationStart = prefsHelper.readFirstStart()
 
         if (isThisFirstApplicationStart) {
             InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
         }
-
-//        val editor = prefs.edit()
-//        editor.putBoolean(KEY_FIRST_START, false)
-//        editor.apply()
 
         prefsHelper.storeFirstStart(false)
     }
@@ -112,6 +104,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
                 true
             }
+            R.id.action_remove_weather->{
+                showDialog(this, "Remove weather data but keep list of locations?", "Cancel", "Remove"){
+                    viewModel.removeWeatherDataOnly()
+                }
+                true
+            }
             R.id.action_cities -> {
                 ListCitiesFragment.newInstance().show(supportFragmentManager, TAG)
                 true
@@ -120,7 +118,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
-            R.id.action_api_key->{
+            R.id.action_api_key -> {
                 DialogManageApiKeyFragment.newInstance().show(supportFragmentManager, TAG)
                 true
             }
