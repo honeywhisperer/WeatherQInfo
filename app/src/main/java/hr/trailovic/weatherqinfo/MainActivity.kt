@@ -1,6 +1,5 @@
 package hr.trailovic.weatherqinfo
 
-import android.content.SharedPreferences
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 private const val TAG = "mA:::"
 
-//private const val KEY_FIRST_START = "ApplicationFirstStartIndicator"
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -32,14 +30,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun setup() {
-        openRxChannels()
         setAppBar()
         setInitView()
         bind()
-    }
-
-    private fun openRxChannels() {
-        viewModel.openRxChannels()
     }
 
     private fun bind() {
@@ -52,7 +45,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun showSnackbar(message: String) {
-        //todo can this (not blank check) be done better, completely in view model ?
         if (message.isNotBlank()) {
             val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
             snackbar.setAction("Dismiss") {

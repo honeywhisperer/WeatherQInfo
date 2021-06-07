@@ -8,7 +8,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogAddBinding
 import hr.trailovic.weatherqinfo.model.CityResponse
-import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 
 @AndroidEntryPoint
@@ -33,7 +32,6 @@ class DialogAddFragment : BaseDialogFragment<FragmentDialogAddBinding>() {
     }
 
     override fun setup() {
-        setFullScreen()
         setListeners()
         setCityResponseRV()
         bind()

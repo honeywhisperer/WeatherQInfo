@@ -31,7 +31,18 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
         super.onDestroyView()
     }
 
+    /**
+     * Inflate and return ViewBinding
+     * */
     abstract fun createViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
+
+    /**
+     * Called in onViewCreated
+     * */
     abstract fun setup()
+
+    /**
+     * Called in onDestroyView
+     * */
     open fun cleanFragment() {}
 }

@@ -9,7 +9,6 @@ import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentDialogManageApiKeyBinding
 import hr.trailovic.weatherqinfo.model.SharedPreferencesHelper
-import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.showDialog
 import javax.inject.Inject
 
@@ -27,7 +26,6 @@ class DialogManageApiKeyFragment : BaseDialogFragment<FragmentDialogManageApiKey
     }
 
     override fun setup() {
-        setFullScreen()
         setView()
         setListeners()
     }
@@ -47,6 +45,8 @@ class DialogManageApiKeyFragment : BaseDialogFragment<FragmentDialogManageApiKey
                 prefsHelper.storeApiKey(newApiKey)
                 binding.etNewApiKey.setText("")
                 binding.ivApiKeyStatus.setImageResource(R.drawable.ic_ok)
+            } else {
+                binding.etNewApiKey.error = "Api key must not be blank"
             }
 //            dialog?.dismiss()
         }

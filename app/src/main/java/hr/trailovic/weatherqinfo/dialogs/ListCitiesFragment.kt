@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentListCitiesBinding
 import hr.trailovic.weatherqinfo.model.City
-import hr.trailovic.weatherqinfo.setFullScreen
 import hr.trailovic.weatherqinfo.showDialog
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 
@@ -25,9 +24,12 @@ class ListCitiesFragment : BaseDialogFragment<FragmentListCitiesBinding>() {
     }
 
     override fun setup() {
-        setFullScreen()
         setListCitiesRV()
         bind()
+    }
+
+    override fun setWidth() {
+        setFullScreen()
     }
 
     private fun bind() {

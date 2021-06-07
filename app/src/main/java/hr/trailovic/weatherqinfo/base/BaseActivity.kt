@@ -25,7 +25,18 @@ abstract class BaseActivity<VB: ViewBinding>: AppCompatActivity() {
         super.onDestroy()
     }
 
+    /**
+     * Inflate and return ViewBinding
+     * */
     internal abstract fun getBinding(): VB
+
+    /**
+     * Called in onResume
+     * */
     abstract fun setup()
+
+    /**
+     * Called in onDestroy
+     * */
     open fun cleanActivity(){}
 }

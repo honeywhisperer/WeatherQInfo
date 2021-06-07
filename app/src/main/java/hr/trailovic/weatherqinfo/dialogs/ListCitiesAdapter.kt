@@ -46,7 +46,7 @@ class ListCitiesAdapter : RecyclerView.Adapter<ListCitiesAdapter.ListCitiesViewH
         }
 
         fun bind(city: City) {
-            "${city.name}, ${city.country}".also { itemCityBinding.tvCity.text = it }
+            city.fullName.also { itemCityBinding.tvCity.text = it }
             "lon: ${city.lon.oneDecimal()}, lat: ${city.lat.oneDecimal()}".also { itemCityBinding.tvCoordinates.text = it }
             itemCityBinding.tvOrderNumber.text = (layoutPosition + 1).toString().format(Locale.ROOT, "%3s")
         }

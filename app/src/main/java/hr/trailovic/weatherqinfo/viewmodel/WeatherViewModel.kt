@@ -15,9 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "wVM:::"
@@ -28,97 +26,108 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private val disposables = CompositeDisposable()
 
-    private var areRxChannelsOpen = false
+    //    private var areRxChannelsOpen: Boolean
+    /**
+     * Rx streams are disabled when data is being removed from local DB
+     * (because local DB data is set to be observed all the time by Rx streams)
+     * */
+    private var areStreamsEnabled: Boolean // disable streams when removing data
 
     private val citiesCrossReference = mutableMapOf<Coord, String>() // coord:fullName
 
-    private val messageMLD = MutableLiveData<String>()
+    private val weatherTodayNeedsUpdate = mutableMapOf<City, Boolean>()
+    private val weatherWeekNeedsUpdate = mutableMapOf<City, Boolean>()
+
+    private val messageMLD = MutableLiveData<String>() // message to user
     val messageLD: LiveData<String> = messageMLD
 
-    private val loadingMLD = MutableLiveData<Boolean>(false)
+    private val loadingMLD = MutableLiveData<Boolean>() // progress indicator
     val loadingLD: LiveData<Boolean> = loadingMLD
 
-    private val weatherTodayListMLD = MutableLiveData<List<WeatherToday>?>()
+    private val weatherTodayListMLD = MutableLiveData<List<WeatherToday>?>() // weather today
     val weatherTodayListLD: LiveData<List<WeatherToday>?> = weatherTodayListMLD
 
-    private val weatherWeekListListMLD = MutableLiveData<List<List<WeatherWeek>>?>()
+    private val weatherWeekListListMLD = MutableLiveData<List<List<WeatherWeek>>?>() // weather week
     val weatherWeekListListLD: LiveData<List<List<WeatherWeek>>?> = weatherWeekListListMLD
 
-    private val cityResponseListMLD = MutableLiveData<List<CityResponse>>()
+    private val cityResponseListMLD = MutableLiveData<List<CityResponse>>() // cities
     val cityResponseListLD: LiveData<List<CityResponse>> = cityResponseListMLD
+
+    /**
+     * Open Rx channels and set init values for code control variables
+     * */
+    init {
+        areStreamsEnabled = true
+        loadingMLD.value = false
+
+        checkWeatherTodayRX()
+        loadWeatherTodayRx()
+
+        checkWeatherWeekRx()
+        loadWeatherWeekRx()
+
+        keepCrossReferencesUpdated()
+    }
 
     /*city*/
 
+    /**
+     * Remove individual city from local DB, and its related weather data
+     * */
     fun removeCityData(city: City) {
-        val lockA = Mutex()
-
-        viewModelScope.launch(Dispatchers.IO) {
-            lockA.withLock {
+        viewModelScope.launch {
+            disableRxStreamsAndExecute {
                 weatherRepo.removeWeatherWeekByCityNameSuspend(city.fullName)
-            }
-            lockA.withLock {
                 weatherRepo.removeWeatherTodayByCityNameSuspend(city.fullName)
-            }
-            lockA.withLock {
                 weatherRepo.removeCitySuspend(city)
             }
         }
     }
 
+    /**
+     * Clean local DB for cities and weather data
+     * */
     fun removeAllData() {
-        val lockA = Mutex()
         viewModelScope.launch {
-            lockA.withLock {
-                weatherRepo.removeAllWeatherWeekSuspend()
-            }
-            lockA.withLock {
-                weatherRepo.removeAllWeatherTodaySuspend()
-            }
-            lockA.withLock {
+            disableRxStreamsAndExecute {
                 weatherRepo.removeAllCitiesSuspend()
+                weatherRepo.removeAllWeatherWeekSuspend()
+                weatherRepo.removeAllWeatherTodaySuspend()
             }
             Log.d(TAG, "removeAllData: ${Thread.currentThread().name}")
         }
     }
 
-    fun removeWeatherDataOnly(){
-        val lockA = Mutex()
-
-        viewModelScope.launch(Dispatchers.IO) {
-            lockA.withLock {
+    /**
+     * Remove stored weather data while keeping the list of saved locations.
+     * App will call APIs and request fresh weather data on next spp start
+     * */
+    fun removeWeatherDataOnly() {
+        viewModelScope.launch {
+            disableRxStreamsAndExecute {
                 weatherRepo.removeAllWeatherWeekSuspend()
-            }
-            lockA.withLock {
                 weatherRepo.removeAllWeatherTodaySuspend()
             }
         }
     }
 
+    /**
+     * Blank text will be ignored
+     * */
     fun dismissErrorMessage() {
         messageMLD.postValue("")
     }
 
+    /**
+     * Load LiveData with Cities data
+     * */
     fun getAllCitiesLD(): LiveData<List<City>> {
         return weatherRepo.getAllCitiesLD()
     }
 
-    fun openRxChannels() {
-        if (areRxChannelsOpen.not()) {
-            checkWeatherTodayRX()
-            loadWeatherTodayRx()
-
-            checkWeatherWeekRx()
-            loadWeatherWeekRx()
-
-            keepCrossReferencesUpdated()
-
-            areRxChannelsOpen = true
-        }
-    }
-
-    /*Rx*/
-
-
+    /**
+     * To simplify code and reduce DB calls, keep essential data updated and available
+     * */
     private fun keepCrossReferencesUpdated() {
         val d = weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
@@ -134,6 +143,11 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     }
 
     /* <<< Add City */
+
+    /**
+     * Stream opens once the user provides string to be searched.
+     * Stream completes when result or error come up
+     * */
     fun checkCityRx(cityName: String) {
         Observable.just(cityName)
             .subscribeOn(Schedulers.io())
@@ -162,6 +176,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
     }
 
+    /**
+     * Save city to local DB: user picks one of the locations that were provided by api (backend)
+     * */
     fun saveCity(cityResponse: CityResponse) {
         val city = convertCityResponse(cityResponse)
         city?.let {
@@ -171,17 +188,29 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
         }
     }
 
+    /**
+     * To have blank fields on the next call
+     * */
     fun cleanCitySearchData() {
         cityResponseListMLD.postValue(emptyList())
     }
     /* Add City >>> */
 
     /* <<< Update Weather Today DB and LiveData */
-    private val weatherTodayNeedsUpdate = mutableMapOf<City, Boolean>()
-
+    /**
+     * Observe Cities in local DB,
+     * check the age of data,
+     * call api to update DB if WeatherToday data is not fresh enough
+     * */
     private fun checkWeatherTodayRX() {
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
+            .map {
+                if (areStreamsEnabled)
+                    it
+                else
+                    emptyList()
+            }
             .flatMap { cityList ->
                 var weatherTodayDB: WeatherToday?
                 cityList.forEach { city ->
@@ -211,7 +240,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onNext(t: WeatherTodayResponse) {
                     Log.d(TAG, "onNext: checkWeatherTodayRX")
-                    viewModelScope.launch(Dispatchers.IO) {
+                    viewModelScope.launch {
                         val locationDescription =
                             citiesCrossReference[t.coord] ?: "error for ${t.coord}"
                         val weatherToday =
@@ -231,6 +260,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
     }
 
+    /**
+     * Observe WeatherToday data in local DB and update LiveData accordingly
+     * */
     private fun loadWeatherTodayRx() {
         weatherRepo.getAllWeatherTodayRx()
             .subscribeOn(Schedulers.io())
@@ -259,11 +291,20 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     /* Update Weather Today DB and LiveData >>> */
 
     /* <<< Update Weather Week DB and LiveData */
-    private val weatherWeekNeedsUpdate = mutableMapOf<City, Boolean>()
-
+    /**
+     * Observe Cities in local DB,
+     * check the age of data,
+     * call api to update DB if WeatherWeek data is not fresh enough
+     * */
     private fun checkWeatherWeekRx() {
         weatherRepo.getAllCitiesRx()
             .subscribeOn(Schedulers.io())
+            .map {
+                if (areStreamsEnabled)
+                    it
+                else
+                    emptyList()
+            }
             .flatMap { cityList ->
                 cityList.forEach { city ->
                     val weatherWeekDB = weatherRepo.getWeatherWeekForCity(city)
@@ -292,7 +333,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onNext(t: WeatherWeekResponse) {
                     Log.d(TAG, "onNext: checkWeatherWeekRx")
-                    viewModelScope.launch(Dispatchers.IO) {
+                    viewModelScope.launch {
                         val coord = Coord(t.lon, t.lat)
                         val locationDescription =
                             citiesCrossReference[coord] ?: "error for $coord"
@@ -314,7 +355,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                 }
             })
     }
-
+    /**
+     * Observe WeatherWeek data in local DB and update LiveData accordingly
+     * */
     private fun loadWeatherWeekRx() {
         weatherRepo.getAllWeatherWeekRx()
             .subscribeOn(Schedulers.io())
@@ -352,6 +395,21 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     }
     /* Update Weather Week DB and LiveData >>> */
 
+    /**
+     * This function is used to disable Rx streams when removing data
+     * */
+    private suspend fun disableRxStreamsAndExecute(block: suspend () -> Unit) {
+        try {
+            areStreamsEnabled = false
+            block()
+        } finally {
+            areStreamsEnabled = true
+        }
+    }
+
+    /**
+     * Take care of disposables
+     * */
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()

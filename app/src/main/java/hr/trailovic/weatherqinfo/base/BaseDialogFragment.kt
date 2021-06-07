@@ -1,5 +1,7 @@
 package hr.trailovic.weatherqinfo.base
 
+import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +24,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setWidth()
         setup()
     }
 
@@ -31,7 +34,41 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
         super.onDestroyView()
     }
 
+    /**
+     * Inflate and return ViewBinding
+     * */
     abstract fun createViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
+
+    /**
+    * Called in onViewCreated
+    * */
     abstract fun setup()
+
+    /**
+     * Called in onDestroyView
+     * */
     open fun cleanFragment() {}
+
+    /**
+     * You can call setFullScreen() or setWidthPercent(Int)
+     * default: setWidthPercent(90)
+     * */
+    protected open fun setWidth() {
+        setWidthPercent(90)
+    }
+
+    protected fun setFullScreen() {
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    protected fun setWidthPercent(percentage: Int) {
+        val percent = percentage.toFloat() / 100
+        val dm = Resources.getSystem().displayMetrics
+        val rect = dm.run { Rect(0, 0, widthPixels, heightPixels) }
+        val percentWidth = rect.width() * percent
+        dialog?.window?.setLayout(percentWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
 }

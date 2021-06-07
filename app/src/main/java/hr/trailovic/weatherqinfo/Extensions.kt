@@ -250,23 +250,6 @@ fun convertCityResponse(cityResponse: CityResponse): City? {
 fun String.toWeatherIconUrl() =
     BuildConfig.WEATHER_IMG_PREFIX + this + BuildConfig.WEATHER_IMG_SUFIX
 
-/*Dialog Fragment*/
-
-fun DialogFragment.setFullScreen() {
-    dialog?.window?.setLayout(
-        ViewGroup.LayoutParams.MATCH_PARENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT
-    )
-}
-
-fun DialogFragment.setWidthPercent(percentage: Int) {
-    val percent = percentage.toFloat() / 100
-    val dm = Resources.getSystem().displayMetrics
-    val rect = dm.run { Rect(0, 0, widthPixels, heightPixels) }
-    val percentWidth = rect.width() * percent
-    dialog?.window?.setLayout(percentWidth.toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-}
-
 fun someTest() {
     val x = IntArray(10) { it * it }
 }

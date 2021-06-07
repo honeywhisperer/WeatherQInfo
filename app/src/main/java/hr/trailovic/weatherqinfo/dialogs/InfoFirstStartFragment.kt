@@ -1,13 +1,9 @@
 package hr.trailovic.weatherqinfo.dialogs
 
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import hr.trailovic.weatherqinfo.base.BaseDialogFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentInfoFirstStartBinding
-import hr.trailovic.weatherqinfo.setFullScreen
 
 class InfoFirstStartFragment : BaseDialogFragment<FragmentInfoFirstStartBinding>() {
 
@@ -19,7 +15,6 @@ class InfoFirstStartFragment : BaseDialogFragment<FragmentInfoFirstStartBinding>
     }
 
     override fun setup() {
-        setFullScreen()
         setInfoText()
         setListeners()
     }
