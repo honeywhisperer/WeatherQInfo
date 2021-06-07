@@ -35,8 +35,8 @@ Currently there is no limit for maximum number of locations, but beware of your 
 
 1. Do not hardcode API keys in published code
 
-![Alt text] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/01%20Today.png "Today overview")
-![Alt text] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/02%20TodayDeatails.png "Today details")
-![Alt text] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/03%20Week.png "Week overview")
-![Alt text] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/04%20WeekDetails.png "Week details")
-![Alt text] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/05%2ManageApi.png "Manage API")
+![Today overview] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/01%20Today.png)
+![Today details] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/02%20TodayDeatails.png)
+![Week overview] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/03%20Week.png)
+![Week details] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/04%20WeekDetails.png)
+![Manage API] (https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/05%2ManageApi.png)
