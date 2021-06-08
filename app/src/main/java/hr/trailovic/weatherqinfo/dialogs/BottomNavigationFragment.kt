@@ -10,6 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.databinding.FragmentBottomNavigationBinding
 import hr.trailovic.weatherqinfo.viewmap.WeatherMapFragment
+import hr.trailovic.weatherqinfo.viewmylocation.WeatherMyLocationFragment
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 import hr.trailovic.weatherqinfo.viewweek.WeatherWeekFragment
 
@@ -55,8 +56,7 @@ class BottomNavigationFragment : BottomSheetDialogFragment() {
                     true
                 }
                 R.id.item_my_location->{
-                    displayMessage("To be implemented: My Location")
-                    //todo
+                    displayFragment(WeatherMyLocationFragment.newInstance())
                     dialog?.dismiss()
                     true
                 }

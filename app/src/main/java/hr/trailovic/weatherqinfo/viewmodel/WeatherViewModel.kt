@@ -11,6 +11,7 @@ import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.repo.WeatherRepository
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.SingleObserver
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -52,6 +53,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     private val cityResponseListMLD = MutableLiveData<List<CityResponse>>() // cities
     val cityResponseListLD: LiveData<List<CityResponse>> = cityResponseListMLD
+
+    private val myLocationWeatherTodayMLD = MutableLiveData<WeatherToday>() // my location
+    val myLocationWeatherTodayLD: LiveData<WeatherToday> = myLocationWeatherTodayMLD
 
     /**
      * Open Rx channels and set init values for code control variables
@@ -339,9 +343,10 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                             citiesCrossReference[coord] ?: "error for $coord"
                         val weatherWeek =
                             convertWeatherWeekApiResponse(locationDescription, t)
-                        weatherWeek.forEach {
-                            weatherRepo.addWeatherWeekSuspend(it)
-                        }
+//                        weatherWeek.forEach {
+//                            weatherRepo.addWeatherWeekSuspend(it)
+//                        }
+                        weatherRepo.addWeatherWeekListSuspend(weatherWeek)
                     }
                 }
 
@@ -394,6 +399,43 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             })
     }
     /* Update Weather Week DB and LiveData >>> */
+
+    /* <<< MyLocation Weather Info */
+
+    fun fetchWeatherTodayForMyLocation(lon: Double, lat: Double){
+        weatherRepo.fetchWeatherTodayForLocationRxSingle(lon, lat)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe(object : SingleObserver<WeatherTodayResponse>{
+                override fun onSubscribe(d: Disposable) {
+                    Log.d(TAG, "onSubscribe: myLocation")
+                    disposables.add(d)
+                }
+
+                override fun onSuccess(t: WeatherTodayResponse) {
+                    Log.d(TAG, "onSuccess: myLocation")
+                    val country = t.sys.country
+                    val place = t.name
+                    val description = if(place.isNotBlank() && country.isNotBlank()){
+                        ": $place, $country"
+                    } else if (place.isNotBlank()){
+                        ": $place"
+                    } else{
+                        ""
+                    }
+                    val locationName = "My location$description"
+                    val weatherToday = convertWeatherTodayApiResponse(locationName, t)
+                    myLocationWeatherTodayMLD.postValue(weatherToday)
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "onError: myLocation", e)
+                    messageMLD.postValue(e.message)
+                }
+            })
+    }
+
+    /* MyLocation Weather Info >>> */
 
     /**
      * This function is used to disable Rx streams when removing data

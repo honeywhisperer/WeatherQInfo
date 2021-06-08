@@ -117,4 +117,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             else -> false
         }
     }
+    /* For location permission request */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }

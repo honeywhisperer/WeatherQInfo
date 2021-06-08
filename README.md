@@ -34,3 +34,5 @@ Currently there is no limit for maximum number of locations, but beware of your 
 **What have I learned so far** (I hope so):
 
 1. Do not hardcode API keys in published code
+
+"Our work is never over" - Daft Punk

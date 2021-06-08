@@ -1,9 +1,6 @@
 package hr.trailovic.weatherqinfo.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import hr.trailovic.weatherqinfo.model.WeatherWeek
 import io.reactivex.Observable
 
@@ -18,6 +15,14 @@ interface WeatherWeekDao {
 
     @Query("DELETE FROM weatherweek WHERE upper(locationFullName) LIKE upper(:cityName)")
     suspend fun removeWeatherWeekByCityNameSuspend(cityName: String)
+
+    @Transaction
+    suspend fun addOrUpdateWeatherWeekSuspend(weatherWeekList : List<WeatherWeek>){
+        removeWeatherWeekByCityNameSuspend(weatherWeekList[0].locationFullName)
+        weatherWeekList.forEach {
+            addWeatherWeekSuspend(it)
+        }
+    }
 
     // GET
 

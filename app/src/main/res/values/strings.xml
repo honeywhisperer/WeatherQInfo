@@ -18,4 +18,5 @@
     <string name="load_api_key">Load Api Key</string>
     <string name="remove_api_key">Remove Api Key</string>
     <string name="remove_weather_data">Remove Weather Data</string>
+    <string name="get_location">Get Location</string>
 </resources>

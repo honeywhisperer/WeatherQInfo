@@ -5,6 +5,7 @@ import hr.trailovic.weatherqinfo.database.AppDatabase
 import hr.trailovic.weatherqinfo.model.*
 import hr.trailovic.weatherqinfo.networking.WeatherService
 import io.reactivex.Observable
+import io.reactivex.Single
 import javax.inject.Inject
 
 private const val TAG = "wR:::"
@@ -79,7 +80,8 @@ class WeatherRepository @Inject constructor(
     }
 
     suspend fun addWeatherTodaySuspend(weatherToday: WeatherToday) {
-        weatherTodayDao.addWeatherTodaySuspend(weatherToday)
+//        weatherTodayDao.addWeatherTodaySuspend(weatherToday)
+        weatherTodayDao.addOrUpdateWeatherTodaySuspend(weatherToday)
     }
 
     fun getWeatherTodayForCity(city: City): WeatherToday? {
@@ -90,6 +92,10 @@ class WeatherRepository @Inject constructor(
     /* <<< Weather Today Api */
     fun fetchWeatherTodayForCityRx(city: City): Observable<WeatherTodayResponse> {
         return apiService.fetchWeatherTodayForCityRx(city.lon, city.lat, prefsHelper.readApiKey())
+    }
+
+    fun fetchWeatherTodayForLocationRxSingle(lon: Double, lat: Double): Single<WeatherTodayResponse> {
+        return apiService.fetchWeatherTodayForLocationRxSingle(lon, lat, prefsHelper.readApiKey())
     }
     /* Weather Today Api >>> */
 
@@ -109,6 +115,10 @@ class WeatherRepository @Inject constructor(
 
     suspend fun addWeatherWeekSuspend(weatherWeek: WeatherWeek) {
         weatherWeekDao.addWeatherWeekSuspend(weatherWeek)
+    }
+
+    suspend fun addWeatherWeekListSuspend(weatherWeekList: List<WeatherWeek>){
+        weatherWeekDao.addOrUpdateWeatherWeekSuspend(weatherWeekList)
     }
 
     fun getWeatherWeekForCity(city: City): List<WeatherWeek>? {

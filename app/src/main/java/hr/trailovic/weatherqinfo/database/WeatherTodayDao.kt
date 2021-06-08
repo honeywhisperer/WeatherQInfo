@@ -21,6 +21,12 @@ interface WeatherTodayDao {
     @Query("DELETE FROM weathertoday WHERE upper(locationFullName) LIKE upper(:cityName)")
     suspend fun removeWeatherTodayByCityNameSuspend(cityName: String)
 
+    @Transaction
+    suspend fun addOrUpdateWeatherTodaySuspend(weatherToday: WeatherToday){
+        removeWeatherTodayByCityNameSuspend(weatherToday.locationFullName)
+        addWeatherTodaySuspend(weatherToday)
+    }
+
     // GET
 
     @Query("SELECT * FROM weathertoday")
