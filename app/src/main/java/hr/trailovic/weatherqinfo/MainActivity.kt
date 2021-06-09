@@ -70,6 +70,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         if (isThisFirstApplicationStart) {
             InfoFirstStartFragment.newInstance().show(supportFragmentManager, TAG)
+            showSnackbar("Before start using the app, provide your own openweathermap.org API key")
         }
 
         prefsHelper.storeFirstStart(false)

@@ -312,8 +312,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
             .flatMap { cityList ->
                 cityList.forEach { city ->
                     val weatherWeekDB = weatherRepo.getWeatherWeekForCity(city)
+                    val timeTag = weatherWeekDB?.firstOrNull()?.timeTag
                     weatherWeekNeedsUpdate[city] =
-                        weatherWeekDB?.firstOrNull()?.timeTag?.isItOlderThan12Hours() ?: true
+                        (timeTag?.isItOlderThan12Hours() ?: true) || (timeTag?.isItToday()?.not() ?: true)
                 }
                 Observable.just(weatherWeekNeedsUpdate)
             }
@@ -360,6 +361,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                 }
             })
     }
+
     /**
      * Observe WeatherWeek data in local DB and update LiveData accordingly
      * */
@@ -402,11 +404,11 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
     /* <<< MyLocation Weather Info */
 
-    fun fetchWeatherTodayForMyLocation(lon: Double, lat: Double){
+    fun fetchWeatherTodayForMyLocation(lon: Double, lat: Double) {
         weatherRepo.fetchWeatherTodayForLocationRxSingle(lon, lat)
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
-            .subscribe(object : SingleObserver<WeatherTodayResponse>{
+            .subscribe(object : SingleObserver<WeatherTodayResponse> {
                 override fun onSubscribe(d: Disposable) {
                     Log.d(TAG, "onSubscribe: myLocation")
                     disposables.add(d)
@@ -416,11 +418,11 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                     Log.d(TAG, "onSuccess: myLocation")
                     val country = t.sys.country
                     val place = t.name
-                    val description = if(place.isNotBlank() && country.isNotBlank()){
+                    val description = if (place.isNotBlank() && country.isNotBlank()) {
                         ": $place, $country"
-                    } else if (place.isNotBlank()){
+                    } else if (place.isNotBlank()) {
                         ": $place"
-                    } else{
+                    } else {
                         ""
                     }
                     val locationName = "My location$description"

@@ -114,6 +114,11 @@ fun Long.isItOlderThan12Hours(): Boolean {
     return (now - this) > (12 * 60 * 60 * 1000)
 }
 
+fun Long.isItToday(): Boolean{
+    val now = System.currentTimeMillis()
+    return now.toDateNameString() == this.toDateNameString()
+}
+
 /*String formatting*/
 
 fun Double.oneDecimal(): String {
