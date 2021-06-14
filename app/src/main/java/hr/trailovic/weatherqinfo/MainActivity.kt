@@ -51,6 +51,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 viewModel.dismissErrorMessage()
                 snackbar.dismiss()
             }
+            snackbar.anchorView = binding.bottomAppBar
             snackbar.show()
         }
     }
