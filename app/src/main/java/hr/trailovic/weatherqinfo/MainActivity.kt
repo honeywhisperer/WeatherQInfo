@@ -103,6 +103,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
                 true
             }
+            R.id.action_refresh_weather->{
+                viewModel.refreshCitiesList()
+                true
+            }
             R.id.action_cities -> {
                 ListCitiesFragment.newInstance().show(supportFragmentManager, TAG)
                 true

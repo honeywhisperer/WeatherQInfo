@@ -20,6 +20,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_refresh_weather"
+        android:title="@string/refresh_weather_data"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_cities"
         android:title="@string/show_cities"
         app:showAsAction="never"/>

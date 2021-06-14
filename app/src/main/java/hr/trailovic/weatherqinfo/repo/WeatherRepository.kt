@@ -59,6 +59,10 @@ class WeatherRepository @Inject constructor(
     suspend fun getAllCitiesList(): List<City> {
         return cityDao.getAllCitiesList()
     }
+
+    suspend fun refreshCityDbSuspended(){
+        cityDao.refreshCitiesSuspended()
+    }
     /* City Room >>> */
 
 

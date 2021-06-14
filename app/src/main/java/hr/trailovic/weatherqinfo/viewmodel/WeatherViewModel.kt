@@ -146,6 +146,12 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
         disposables.add(d)
     }
 
+    fun refreshCitiesList(){
+        viewModelScope.launch {
+            weatherRepo.refreshCityDbSuspended()
+        }
+    }
+
     /* <<< Add City */
 
     /**

@@ -28,6 +28,13 @@ interface CityDao {
     @Query("DELETE FROM city")
     suspend fun removeAllCitiesSuspend()
 
+    @Transaction
+    suspend fun refreshCitiesSuspended(){
+        val city = City("xyz", "XY", null, 999.0, 999.0)
+        addCitySuspend(city)
+        removeCitySuspend(city)
+    }
+
     // - GET
 
     // Rx
