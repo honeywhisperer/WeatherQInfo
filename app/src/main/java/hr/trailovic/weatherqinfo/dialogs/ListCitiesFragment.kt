@@ -1,6 +1,7 @@
 package hr.trailovic.weatherqinfo.dialogs
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,14 +35,22 @@ class ListCitiesFragment : BaseDialogFragment<FragmentListCitiesBinding>() {
 
     private fun bind() {
         viewModel.getAllCitiesLD().observe(viewLifecycleOwner) {
-            citiesAdapter.setItems(it)
+            if (it.isEmpty()) {
+                binding.rvCities.visibility = View.GONE
+                binding.tvNoDataInfo.visibility = View.VISIBLE
+                binding.tvNoDataInfo.text = "no cities to show"
+            } else {
+                binding.rvCities.visibility = View.VISIBLE
+                binding.tvNoDataInfo.visibility = View.GONE
+                citiesAdapter.setItems(it)
+            }
         }
     }
 
     private fun setListCitiesRV() {
         citiesAdapter.listener = object : OnCityItemInteraction {
             override fun delete(city: City) {
-                showDialog(requireContext(), "Remove ${city.name}?", "Cancel", "Remove"){
+                showDialog(requireContext(), "Remove ${city.name}?", "Cancel", "Remove") {
                     viewModel.removeCityData(city)
                 }
             }
