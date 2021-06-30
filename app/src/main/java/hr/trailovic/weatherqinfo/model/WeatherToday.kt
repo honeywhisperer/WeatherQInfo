@@ -10,11 +10,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @Entity
 data class WeatherToday(
-//    @ColumnInfo val cod: Int,
-
     @PrimaryKey val locationFullName: String,
-//    @ColumnInfo val country: String,
-
 
     @ColumnInfo val sunrise: Long,
     @ColumnInfo val sunset: Long,
@@ -31,8 +27,6 @@ data class WeatherToday(
     @ColumnInfo val description: String,
     @ColumnInfo val icon: String,
     @ColumnInfo val timeTag: Long = System.currentTimeMillis()
-
-//    @PrimaryKey val cityFullName: String = locationFullName,
 ) : Parcelable {
     constructor(
         locationFullName: String,
@@ -161,7 +155,3 @@ data class Snow(
     @field:Json(name = "snow.3h")
     val snow3h: Int,
 )
-
-// --- Wrapper
-
-data class WeatherTodayResponseWrapper(val weatherTodayResponse: WeatherTodayResponse?)

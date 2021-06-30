@@ -190,7 +190,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
      * Save city to local DB: user picks one of the locations that were provided by api (backend)
      * */
     fun saveCity(cityResponse: CityResponse) {
-        val city = convertCityResponse(cityResponse)
+        val city = City.fromApiResponse(cityResponse)
         city?.let {
             viewModelScope.launch {
                 weatherRepo.addCitySuspend(it)
@@ -350,9 +350,6 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                             citiesCrossReference[coord] ?: "error for $coord"
                         val weatherWeekList =
                             WeatherWeek.fromApiResponse(locationDescription, t)
-//                        weatherWeek.forEach {
-//                            weatherRepo.addWeatherWeekSuspend(it)
-//                        }
                         weatherRepo.addWeatherWeekListSuspend(weatherWeekList)
                     }
                 }

@@ -2,14 +2,8 @@ package hr.trailovic.weatherqinfo
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Rect
-import android.os.SystemClock
-import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import hr.trailovic.weatherqinfo.model.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -191,73 +185,8 @@ fun Double.generateFeelsLikeTemperatureText(realTemperature: Double): String {
         "feels like ${this.oneDecimal().temperature()}"
 }
 
-/*Converters*/
-//System.currentTimeMillis()
-
-/*fun convertWeatherTodayApiResponse(
-    cityName: String,
-    weatherTodayResponse: WeatherTodayResponse
-): WeatherToday =
-    WeatherToday(
-//        weatherTodayResponse.cod,
-        cityName,
-//        weatherTodayResponse.sys.country,
-        (weatherTodayResponse.sys.sunrise + weatherTodayResponse.timezone) * 1000,
-        (weatherTodayResponse.sys.sunset + weatherTodayResponse.timezone) * 1000,
-        weatherTodayResponse.main.temp,
-        weatherTodayResponse.main.feels_like,
-        weatherTodayResponse.main.temp_min,
-        weatherTodayResponse.main.temp_max,
-        weatherTodayResponse.main.pressure,
-        weatherTodayResponse.main.humidity,
-        weatherTodayResponse.weather[0].main,
-        weatherTodayResponse.weather[0].description,
-        weatherTodayResponse.weather[0].icon,
-    )*/
-
-/*fun convertWeatherWeekApiResponse(
-    location: String,
-    weatherWeekResponse: WeatherWeekResponse
-): List<WeatherWeek> {
-    val listOfConverted = mutableListOf<WeatherWeek>()
-    for (day in weatherWeekResponse.daily) {
-        val newDay = WeatherWeek(
-            location,
-            (day.sunrise + weatherWeekResponse.timezoneOffset) * 1000,
-            (day.sunset + weatherWeekResponse.timezoneOffset) * 1000,
-            day.temp.day,
-            day.temp.min,
-            day.temp.max,
-            day.weather[0].description,
-            day.weather[0].icon,
-            day.pressure,
-            day.humidity,
-            day.windSpeed,
-            day.rain,
-            day.uvi
-        )
-        listOfConverted.add(newDay)
-    }
-    return listOfConverted
-}*/
-
-
-
-fun convertCityResponse(cityResponse: CityResponse): City? {
-    var newCity: City? = null
-    with(cityResponse) {
-        if (name != null && country != null && lat != null && lon != null) {
-            newCity = City(name, country, state, lon, lat)
-        }
-    }
-    return newCity
-}
 
 /*Weather API response*/
 
 fun String.toWeatherIconUrl() =
     BuildConfig.WEATHER_IMG_PREFIX + this + BuildConfig.WEATHER_IMG_SUFIX
-
-fun someTest() {
-    val x = IntArray(10) { it * it }
-}
