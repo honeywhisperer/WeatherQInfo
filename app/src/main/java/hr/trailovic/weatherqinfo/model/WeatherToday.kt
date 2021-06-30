@@ -33,7 +33,25 @@ data class WeatherToday(
     @ColumnInfo val timeTag: Long = System.currentTimeMillis()
 
 //    @PrimaryKey val cityFullName: String = locationFullName,
-) : Parcelable
+) : Parcelable {
+    constructor(
+        locationFullName: String,
+        weatherTodayResponse: WeatherTodayResponse
+    ) : this(
+        locationFullName,
+        (weatherTodayResponse.sys.sunrise + weatherTodayResponse.timezone) * 1000,
+        (weatherTodayResponse.sys.sunset + weatherTodayResponse.timezone) * 1000,
+        weatherTodayResponse.main.temp,
+        weatherTodayResponse.main.feels_like,
+        weatherTodayResponse.main.temp_min,
+        weatherTodayResponse.main.temp_max,
+        weatherTodayResponse.main.pressure,
+        weatherTodayResponse.main.humidity,
+        weatherTodayResponse.weather[0].main,
+        weatherTodayResponse.weather[0].description,
+        weatherTodayResponse.weather[0].icon,
+    )
+}
 
 // --- API response
 

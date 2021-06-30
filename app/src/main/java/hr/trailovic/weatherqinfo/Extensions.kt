@@ -193,7 +193,8 @@ fun Double.generateFeelsLikeTemperatureText(realTemperature: Double): String {
 
 /*Converters*/
 //System.currentTimeMillis()
-fun convertWeatherTodayApiResponse(
+
+/*fun convertWeatherTodayApiResponse(
     cityName: String,
     weatherTodayResponse: WeatherTodayResponse
 ): WeatherToday =
@@ -212,7 +213,7 @@ fun convertWeatherTodayApiResponse(
         weatherTodayResponse.weather[0].main,
         weatherTodayResponse.weather[0].description,
         weatherTodayResponse.weather[0].icon,
-    )
+    )*/
 
 fun convertWeatherWeekApiResponse(
     location: String,

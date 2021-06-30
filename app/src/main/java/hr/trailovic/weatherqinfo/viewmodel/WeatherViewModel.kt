@@ -254,7 +254,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         val locationDescription =
                             citiesCrossReference[t.coord] ?: "error for ${t.coord}"
                         val weatherToday =
-                            convertWeatherTodayApiResponse(locationDescription, t)
+                            WeatherToday(locationDescription, t)
                         weatherRepo.addWeatherTodaySuspend(weatherToday)
                     }
                 }
@@ -432,7 +432,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         ""
                     }
                     val locationName = "My location$description"
-                    val weatherToday = convertWeatherTodayApiResponse(locationName, t)
+                    val weatherToday = WeatherToday(locationName, t)
                     myLocationWeatherTodayMLD.postValue(weatherToday)
                 }
 
