@@ -348,12 +348,12 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                         val coord = Coord(t.lon, t.lat)
                         val locationDescription =
                             citiesCrossReference[coord] ?: "error for $coord"
-                        val weatherWeek =
-                            convertWeatherWeekApiResponse(locationDescription, t)
+                        val weatherWeekList =
+                            WeatherWeek.fromApiResponse(locationDescription, t)
 //                        weatherWeek.forEach {
 //                            weatherRepo.addWeatherWeekSuspend(it)
 //                        }
-                        weatherRepo.addWeatherWeekListSuspend(weatherWeek)
+                        weatherRepo.addWeatherWeekListSuspend(weatherWeekList)
                     }
                 }
 

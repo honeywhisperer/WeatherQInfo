@@ -26,7 +26,35 @@ data class WeatherWeek(
     @ColumnInfo val uvi: Double,
     @ColumnInfo val timeTag: Long = System.currentTimeMillis(),
     @PrimaryKey val id: String = locationFullName + sunrise.toString()
-) : Parcelable
+) : Parcelable {
+    companion object {
+        fun fromApiResponse(
+            locationFullName: String,
+            weatherWeekResponse: WeatherWeekResponse
+        ): List<WeatherWeek> {
+            val listOfConverted = mutableListOf<WeatherWeek>()
+            for (day in weatherWeekResponse.daily) {
+                val newDay = WeatherWeek(
+                    locationFullName,
+                    (day.sunrise + weatherWeekResponse.timezoneOffset) * 1000,
+                    (day.sunset + weatherWeekResponse.timezoneOffset) * 1000,
+                    day.temp.day,
+                    day.temp.min,
+                    day.temp.max,
+                    day.weather[0].description,
+                    day.weather[0].icon,
+                    day.pressure,
+                    day.humidity,
+                    day.windSpeed,
+                    day.rain,
+                    day.uvi
+                )
+                listOfConverted.add(newDay)
+            }
+            return listOfConverted
+        }
+    }
+}
 
 // --- API response
 

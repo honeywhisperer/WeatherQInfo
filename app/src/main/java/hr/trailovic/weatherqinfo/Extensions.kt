@@ -215,7 +215,7 @@ fun Double.generateFeelsLikeTemperatureText(realTemperature: Double): String {
         weatherTodayResponse.weather[0].icon,
     )*/
 
-fun convertWeatherWeekApiResponse(
+/*fun convertWeatherWeekApiResponse(
     location: String,
     weatherWeekResponse: WeatherWeekResponse
 ): List<WeatherWeek> {
@@ -239,7 +239,9 @@ fun convertWeatherWeekApiResponse(
         listOfConverted.add(newDay)
     }
     return listOfConverted
-}
+}*/
+
+
 
 fun convertCityResponse(cityResponse: CityResponse): City? {
     var newCity: City? = null
