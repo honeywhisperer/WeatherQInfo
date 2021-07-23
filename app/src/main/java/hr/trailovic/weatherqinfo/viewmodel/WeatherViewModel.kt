@@ -39,8 +39,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     private val weatherTodayNeedsUpdate = mutableMapOf<City, Boolean>()
     private val weatherWeekNeedsUpdate = mutableMapOf<City, Boolean>()
 
-    private val messageMLD = MutableLiveData<String>() // message to user
-    val messageLD: LiveData<String> = messageMLD
+    private val messageMLD = MutableLiveData<OneTimeEvent<String>>() // message to user
+    val messageLD: LiveData<OneTimeEvent<String>> = messageMLD
 
     private val loadingMLD = MutableLiveData<Boolean>() // progress indicator
     val loadingLD: LiveData<Boolean> = loadingMLD
@@ -119,7 +119,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
      * Blank text will be ignored
      * */
     fun dismissErrorMessage() {
-        messageMLD.postValue("")
+//        messageMLD.postValue("")
+        messageToUser("")
     }
 
     /**
@@ -176,7 +177,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
                 }
 
                 override fun onError(e: Throwable) {
-                    messageMLD.postValue("Error requesting data for $cityName")
+//                    messageMLD.postValue("Error requesting data for $cityName")
+                    messageToUser("Error requesting data for $cityName")
                     Log.e(TAG, "onError: ", e)
                 }
 
@@ -261,7 +263,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "onError: checkWeatherTodayRX", e)
-                    messageMLD.postValue("error checkWeatherTodayRx")
+//                    messageMLD.postValue("error checkWeatherTodayRx")
+                    messageToUser("error checkWeatherTodayRx")
                 }
 
                 override fun onComplete() {
@@ -290,7 +293,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "onError: loadWeatherTodayRx", e)
-                    messageMLD.postValue("error loadWeatherTodayRx")
+//                    messageMLD.postValue("error loadWeatherTodayRx")
+                    messageToUser("error loadWeatherTodayRx")
                 }
 
                 override fun onComplete() {
@@ -356,7 +360,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "onError: checkWeatherWeekRx", e)
-                    messageMLD.postValue("error checkWeatherWeekRx")
+//                    messageMLD.postValue("error checkWeatherWeekRx")
+                    messageToUser("error checkWeatherWeekRx")
                 }
 
                 override fun onComplete() {
@@ -395,7 +400,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "onError: loadWeatherWeekRx", e)
-                    messageMLD.postValue("error loadWeatherWeekRx")
+//                    messageMLD.postValue("error loadWeatherWeekRx")
+                    messageToUser("error loadWeatherWeekRx")
                 }
 
                 override fun onComplete() {
@@ -435,7 +441,8 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "onError: myLocation", e)
-                    messageMLD.postValue(e.message)
+//                    messageMLD.postValue(e.message)
+                    e.message?.let { messageToUser(it) }
                 }
             })
     }
@@ -460,5 +467,9 @@ class WeatherViewModel @Inject constructor(private val weatherRepo: WeatherRepos
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
+    }
+
+    private fun messageToUser(message: String){
+        messageMLD.postValue(message.toOneTimeEvent())
     }
 }

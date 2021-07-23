@@ -10,6 +10,7 @@ import hr.trailovic.weatherqinfo.base.BaseActivity
 import hr.trailovic.weatherqinfo.databinding.ActivityMainBinding
 import hr.trailovic.weatherqinfo.dialogs.*
 import hr.trailovic.weatherqinfo.model.SharedPreferencesHelper
+import hr.trailovic.weatherqinfo.model.consume
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
 import javax.inject.Inject
@@ -36,8 +37,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun bind() {
-        viewModel.messageLD.observe(this) {
-            showSnackbar(it)
+        viewModel.messageLD.observe(this) {oneTimeEvent->
+            oneTimeEvent.consume {message->
+                showSnackbar(message)
+            }
         }
         viewModel.loadingLD.observe(this) {
             binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
@@ -45,15 +48,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun showSnackbar(message: String) {
-        if (message.isNotBlank()) {
+//        if (message.isNotBlank()) {
             val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE)
             snackbar.setAction("Dismiss") {
-                viewModel.dismissErrorMessage()
+//                viewModel.dismissErrorMessage()
                 snackbar.dismiss()
             }
             snackbar.anchorView = binding.bottomAppBar
             snackbar.show()
-        }
+//        }
     }
 
     private fun setAppBar() {
