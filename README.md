@@ -1,16 +1,13 @@
 # WeatherQInfo
 weather tool
 
-**Intro**:
+## Intro
 
 This is my continuous work in progress app which I have started at the end of Android App Development course.
 The app is open for the new ideas and improvements; it is kind of reminder for me to keep learning and improve further.
 
 
-**Functional Description**
-
-
-**Main Views**:
+## Main Views
 
 1. Current Weather Info _Long press on weather info shows more details_
 2. Weather forecast for the next seven days _Long press on weather info shows more details_
@@ -18,7 +15,7 @@ The app is open for the new ideas and improvements; it is kind of reminder for m
 4. Weather map
 
 
-**Options**:
+## Options
 
 1. Add new location/city
 2. View and manage all saved locations
@@ -34,3 +31,11 @@ However, the app tends to make API calls as rarely as possible while still provi
 **What have I learned so far** (I hope so):
 
 1. Do not hardcode API keys in published code
+
+## Screenshots
+
+![One](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/01%20Today.png)
+![Two](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/02%20TodayDeatails.png)
+![Three](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/03%20Week.png)
+![Four](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/04%20WeekDetails.png)
+![Five](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/05%20ManageApi.png)
