@@ -34,8 +34,8 @@ However, the app tends to make API calls as rarely as possible while still provi
 
 ## Screenshots
 
-![One](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/01%20Today.png)
-![Two](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/02%20TodayDeatails.png)
-![Three](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/03%20Week.png)
-![Four](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/04%20WeekDetails.png)
-![Five](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/05%20ManageApi.png)
+![Today](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/01%20Today.png "Today")
+![Today Details](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/02%20TodayDeatails.png "Today Details")
+![Week](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/03%20Week.png "Week")
+![Week Details](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/04%20WeekDetails.png "Week Details")
+![Manage API](https://github.com/honeywhisperer/WeatherQInfo/blob/release/Screenshots/05%20ManageApi.png "Manage API")
