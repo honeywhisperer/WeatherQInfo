@@ -1,10 +1,9 @@
-package hr.trailovic.weatherqinfo.viewmap
+package hr.trailovic.weatherqinfo.view.viewmap
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
-import android.webkit.WebViewClient
 import hr.trailovic.weatherqinfo.base.BaseFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentWeatherMapBinding
 import hr.trailovic.weatherqinfo.model.CustomWebViewClient

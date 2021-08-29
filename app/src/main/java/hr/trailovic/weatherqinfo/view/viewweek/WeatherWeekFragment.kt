@@ -1,4 +1,4 @@
-package hr.trailovic.weatherqinfo.viewweek
+package hr.trailovic.weatherqinfo.view.viewweek
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hr.trailovic.weatherqinfo.base.BaseFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentWeatherWeekBinding
-import hr.trailovic.weatherqinfo.dialogs.DetailsWeekFragment
+import hr.trailovic.weatherqinfo.view.dialogs.DetailsWeekFragment
 import hr.trailovic.weatherqinfo.model.WeatherWeek
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 import javax.inject.Inject

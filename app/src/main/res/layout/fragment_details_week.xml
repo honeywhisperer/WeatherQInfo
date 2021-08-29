@@ -7,7 +7,7 @@
     android:paddingStart="24dp"
     android:paddingTop="16dp"
     android:paddingEnd="24dp"
-    tools:context=".dialogs.DetailsWeekFragment">
+    tools:context=".view.dialogs.DetailsWeekFragment">
 
     <TextView
         android:id="@+id/tvLocation"

@@ -1,12 +1,10 @@
-package hr.trailovic.weatherqinfo.viewmylocation
+package hr.trailovic.weatherqinfo.view.viewmylocation
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,9 +12,8 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
 import hr.trailovic.weatherqinfo.base.BaseFragment
 import hr.trailovic.weatherqinfo.databinding.FragmentWeatherMyLocationBinding
-import hr.trailovic.weatherqinfo.dialogs.DetailsTodayFragment
+import hr.trailovic.weatherqinfo.view.dialogs.DetailsTodayFragment
 import hr.trailovic.weatherqinfo.oneDecimal
-import hr.trailovic.weatherqinfo.showDialog
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
 
 private const val TAG = "mlF:::"

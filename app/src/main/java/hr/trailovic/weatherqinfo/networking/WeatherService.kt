@@ -1,13 +1,10 @@
 package hr.trailovic.weatherqinfo.networking
 
-import hr.trailovic.weatherqinfo.BuildConfig
 import hr.trailovic.weatherqinfo.model.CityResponse
 import hr.trailovic.weatherqinfo.model.WeatherTodayResponse
 import hr.trailovic.weatherqinfo.model.WeatherWeekResponse
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single
-import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Query
 

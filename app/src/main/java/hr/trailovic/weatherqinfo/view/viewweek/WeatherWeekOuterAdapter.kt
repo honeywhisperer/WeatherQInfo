@@ -1,4 +1,4 @@
-package hr.trailovic.weatherqinfo.viewweek
+package hr.trailovic.weatherqinfo.view.viewweek
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

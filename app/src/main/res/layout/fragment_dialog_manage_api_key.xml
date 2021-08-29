@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp"
-    tools:context=".dialogs.DialogManageApiKeyFragment">
+    tools:context=".view.dialogs.DialogManageApiKeyFragment">
 
     <EditText
         android:id="@+id/etNewApiKey"

@@ -1,4 +1,4 @@
-package hr.trailovic.weatherqinfo.dialogs
+package hr.trailovic.weatherqinfo.view.dialogs
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,10 +9,10 @@ import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.databinding.FragmentBottomNavigationBinding
-import hr.trailovic.weatherqinfo.viewmap.WeatherMapFragment
-import hr.trailovic.weatherqinfo.viewmylocation.WeatherMyLocationFragment
-import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
-import hr.trailovic.weatherqinfo.viewweek.WeatherWeekFragment
+import hr.trailovic.weatherqinfo.view.viewmap.WeatherMapFragment
+import hr.trailovic.weatherqinfo.view.viewmylocation.WeatherMyLocationFragment
+import hr.trailovic.weatherqinfo.view.viewtoday.WeatherTodayFragment
+import hr.trailovic.weatherqinfo.view.viewweek.WeatherWeekFragment
 
 class BottomNavigationFragment : BottomSheetDialogFragment() {
 

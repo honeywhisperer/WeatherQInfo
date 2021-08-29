@@ -1,4 +1,4 @@
-package hr.trailovic.weatherqinfo.dialogs
+package hr.trailovic.weatherqinfo.view.dialogs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

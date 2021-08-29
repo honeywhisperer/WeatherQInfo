@@ -1,4 +1,4 @@
-package hr.trailovic.weatherqinfo
+package hr.trailovic.weatherqinfo.view
 
 import android.view.Menu
 import android.view.MenuItem
@@ -6,13 +6,16 @@ import android.view.View
 import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import hr.trailovic.weatherqinfo.R
 import hr.trailovic.weatherqinfo.base.BaseActivity
 import hr.trailovic.weatherqinfo.databinding.ActivityMainBinding
-import hr.trailovic.weatherqinfo.dialogs.*
+import hr.trailovic.weatherqinfo.view.dialogs.*
+import hr.trailovic.weatherqinfo.displayFragment
 import hr.trailovic.weatherqinfo.model.SharedPreferencesHelper
 import hr.trailovic.weatherqinfo.model.consume
+import hr.trailovic.weatherqinfo.showDialog
 import hr.trailovic.weatherqinfo.viewmodel.WeatherViewModel
-import hr.trailovic.weatherqinfo.viewtoday.WeatherTodayFragment
+import hr.trailovic.weatherqinfo.view.viewtoday.WeatherTodayFragment
 import javax.inject.Inject
 
 private const val TAG = "mA:::"

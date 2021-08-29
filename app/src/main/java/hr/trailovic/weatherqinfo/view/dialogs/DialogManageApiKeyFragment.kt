@@ -1,4 +1,4 @@
-package hr.trailovic.weatherqinfo.dialogs
+package hr.trailovic.weatherqinfo.view.dialogs
 
 import android.content.Intent
 import android.net.Uri
