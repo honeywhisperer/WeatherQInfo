@@ -76,7 +76,9 @@ class WeatherWeekDiffCallback(
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        return oldList[oldItemPosition][0].locationFullName == newList[newItemPosition][0].locationFullName &&
+                oldList[oldItemPosition][0].tempDay == newList[newItemPosition][0].tempDay &&
+                oldList[oldItemPosition][0].timeTag == newList[newItemPosition][0].timeTag
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
